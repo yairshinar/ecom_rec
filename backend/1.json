@@ -1,0 +1,23 @@
+{
+    "LaunchTemplateName": "MyLaunchTemplate",
+    "LaunchTemplateData": {
+        "InstanceType": "t2.micro", 
+        "ImageId": "ami-06b21ccaeff8cd686", 
+        "KeyName": "your-key-pair-name",
+        "SecurityGroupIds": [
+            "sg-0123456789abcdef0" 
+        ],
+        "UserData": "base64-encoded-user-data",
+        "TagSpecifications": [
+            {
+                "ResourceType": "instance",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "MyInstance"
+                    }
+                ]
+            }
+        ]
+    }
+}

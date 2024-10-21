@@ -1,0 +1,4 @@
+option_settings:
+  aws:ec2:launchtemplate:
+    LaunchTemplateId: "YourLaunchTemplateId"
+    Version: "$Latest" # or specify a specific version

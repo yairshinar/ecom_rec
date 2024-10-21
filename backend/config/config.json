@@ -1,0 +1,30 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "asdfqwer",
+    "database": "mydb",
+    "host": "mydb.cxeey2ygcaot.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres", 
+    "dialectOptions": {
+      "ssl": {
+        "require": false,
+        "rejectUnauthorized": false
+      }
+  },
+  "test": {
+    "username": "postgres",
+    "password": "asdfqwer",
+    "database": "mydb",
+    "host": "mydb.cxeey2ygcaot.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "asdfqwer",
+    "database": "mydb",
+    "host": "mydb.cxeey2ygcaot.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres" 
+   
+    }
+  }
+} 

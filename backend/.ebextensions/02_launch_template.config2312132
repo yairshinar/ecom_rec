@@ -1,0 +1,19 @@
+# .ebextensions/02_launch_template.config
+Resources:
+  AWSEBAutoScalingLaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-06b21ccaeff8cd686
+      SecurityGroups:
+        - Ref: AWSEBSecurityGroup
+      IamInstanceProfile: AWSEB-Instance-Profile
+      UserData:
+        Fn::Base64: 
+          Fn::Join:
+            - ""
+            - - "#!/bin/bash\n"
+              - "yum update -y\n"
+              - "yum install -y nodejs npm\n"
+              - "cd /var/app/current\n"
+              - "npm install\n"

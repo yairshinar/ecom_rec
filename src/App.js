@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import Home from './components/Home';
+import ProductList from './components/ProductList';
+import ProductDetail from './components/ProductDetail';
+import Recommendations from './components/Recommendations';
+
+// Custom hook to log route changes
+function useLogRouteChanges() {
+  const location = useLocation();
+  
+  useEffect(() => {
+    console.log('Current Route:', location.pathname);
+  }, [location]);
+}
+
+// Wrapper component to use the route logging hook
+function RouteChangeLogger() {
+  useLogRouteChanges();
+  return null; // This component doesn't render anything, it's only for logging
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        {/* RouteChangeLogger will log the current route */}
+        <RouteChangeLogger />
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ProductList />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/recommendations" element={<Recommendations />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
