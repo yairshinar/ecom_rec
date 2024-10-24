@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'; 
+import { Link } from 'react-router-dom';
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
  
@@ -22,6 +23,8 @@ const ProductDetail = () => {
             <h1>{product.name}</h1>
             <p>{product.description}</p>
             <p>Price: ${product.price}</p>
+             {/* Link back to Home */}
+          <Link to="/">Back to Homepage</Link>
         </div>
     );
 };

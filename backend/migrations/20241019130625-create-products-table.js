@@ -1,8 +1,7 @@
 'use strict';
-
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('products', { // Ensure 'products' is in lowercase
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Products', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,12 +13,14 @@ module.exports = {
         allowNull: false
       },
       description: {
-        type: Sequelize.TEXT,
-        allowNull: true
+        type: Sequelize.TEXT
       },
       price: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false
+      },
+      category: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -31,8 +32,7 @@ module.exports = {
       }
     });
   },
-
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('products');
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Products');
   }
 };

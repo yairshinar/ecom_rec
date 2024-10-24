@@ -1,40 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
-
-const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+import { Link } from 'react-router-dom';
 
  
-function ProductList() {
-    
-const [products, setProducts] = useState([]);
-const [error, setError] = useState(null); 
-        
-  useEffect(() => { // Define error state
-    console.log('ProductList Component Rendered'); 
-        const fetchProducts = async () => {
-            try {
-                console.log(`Fetching products from ${API_ENDPOINT}/products`); // Log the endpoint being called
-                const response = await axios.get(`${API_ENDPOINT}/products`);
-                console.log('Response data:', response.data); // Log the response data
-                setProducts(response.data);
-            } catch (err) {
-                console.error('Error fetching products:', err); // Log the error if it occurs
-                setError(err);
-            }
-        };
+import { fetchProducts, logUserAction } from '../services/api';
 
-        fetchProducts();
+const ProductList = () => {
+    const userId = localStorage.getItem('userId');
+
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        
+        const userId = localStorage.getItem('userId');
+             
+        const getProducts = async () => {
+            const data = await fetchProducts();
+            setProducts(data);
+        };
+        getProducts();
     }, []);
+
+    const handleProductClick = (productId) => {
+        console.log(userId, productId,)
+        logUserAction(userId, productId, 'viewed');
+    };
 
     return (
         <div>
-            <h1>Products</h1>
+            <h2>Product List</h2>
             <ul>
                 {products.map(product => (
-                    <li key={product.id}>{product.name}</li>
+                    <li key={product.id} onClick={() => handleProductClick(product.id)}>
+                        {product.name} - {product.price}
+                    </li>
                 ))}
             </ul>
+            
+            <br/> 
+            <Link to="/recommendations">See Recommendations</Link>
+            <br/> 
+
+             {/* Link back to Home */}
+          <Link to="/">Back to Homepage</Link>
         </div>
     );
 };
