@@ -1,9 +1,9 @@
 {
   "version": 1,
   "paths": {
-    "/recommend": {
-      "name": "/recommend",
-      "lambdaFunction": "GetRecommendations",
+    "/items": {
+      "name": "/items",
+      "lambdaFunction": "frontend16d8bb30",
       "permissions": {
         "setting": "open"
       }

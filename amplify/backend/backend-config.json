@@ -1,6 +1,6 @@
 {
   "api": {
-    "apigw": {
+    "api35fec9a3": {
       "dependsOn": [
         {
           "attributes": [
@@ -8,56 +8,62 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "GetRecommendations"
+          "resourceName": "frontend16d8bb30"
         }
       ],
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     }
   },
+  "auth": {
+    "frontende9babb3c": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
   "function": {
-    "GetRecommendations": {
+    "frontend16d8bb30": {
       "build": true,
-      "dependsOn": [
-        {
-          "attributeEnvMap": {
-            "Arn": "TABLE_ARN",
-            "Name": "TABLE_NAME"
-          },
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "storage",
-          "resourceName": "dynamorec"
-        }
-      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
   },
   "parameters": {
-    "AMPLIFY_function_GetRecommendations_deploymentBucketName": {
+    "AMPLIFY_function_frontend16d8bb30_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "GetRecommendations"
+          "resourceName": "frontend16d8bb30"
         }
       ]
     },
-    "AMPLIFY_function_GetRecommendations_s3Key": {
+    "AMPLIFY_function_frontend16d8bb30_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "GetRecommendations"
+          "resourceName": "frontend16d8bb30"
         }
       ]
-    }
-  },
-  "storage": {
-    "dynamorec": {
-      "providerPlugin": "awscloudformation",
-      "service": "DynamoDB"
     }
   }
 }

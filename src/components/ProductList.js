@@ -1,51 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
-
- 
 import { fetchProducts, logUserAction } from '../services/api';
 
 const ProductList = () => {
     const userId = localStorage.getItem('userId');
-
-    const [products, setProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [products, setProducts] = useState([]); // Initialize as an empty array
 
     useEffect(() => {
-        
-        const userId = localStorage.getItem('userId');
-             
-        const getProducts = async () => {
-            const data = await fetchProducts();
-            setProducts(data);
+        const loadProducts = async () => {
+            try {
+                const response = await fetchProducts();
+                setProducts(response || []); // Use an empty array if `response.data` is undefined
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
         };
-        getProducts();
+        loadProducts();
     }, []);
 
-    const handleProductClick = (productId) => {
-        console.log(userId, productId,)
-        logUserAction(userId, productId, 'viewed');
+    const handleProductClick = (product) => {
+        logUserAction(userId, product.id, 'viewed');
+        setSelectedProduct(product); // Pass the entire product object, not just `product.id`
     };
 
     return (
         <div>
             <h2>Product List</h2>
+            
+            {/* Display selected product details */}
+            {selectedProduct && (
+                <div className="product-details">
+                    <h3>{selectedProduct.name}</h3>
+                    <p>{selectedProduct.description}</p>
+                    <p>Price: ${selectedProduct.price}</p>
+                </div>
+            )}
+            
             <ul>
                 {products.map(product => (
-                    <li key={product.id} onClick={() => handleProductClick(product.id)}>
-                        {product.name} - {product.price}
+                    <li key={product.id} onClick={() => handleProductClick(product)} style={{ cursor: 'pointer' }}>
+                        {product.name} - ${product.price}
                     </li>
                 ))}
             </ul>
             
-            <br/> 
+            <br/>
             <Link to="/recommendations">See Recommendations</Link>
-            <br/> 
-
-             {/* Link back to Home */}
-          <Link to="/">Back to Homepage</Link>
+            <br/>
+            <Link to="/">Back to Homepage</Link>
         </div>
     );
 };
 
 export default ProductList;
-   
