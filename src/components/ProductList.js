@@ -92,8 +92,8 @@ const ProductList = () => {
                             <div key={rec.id} className="recommendation-item">
                                 <h4>{rec.name}</h4>
                                 <p>Price: ${rec.price}</p>
-                                <p>Score: {rec.recommendationScore}</p>
-                                <p>Calculation: {rec.calculationDetails}</p>
+                                <p>Score: {rec.score}</p>
+                                <p>Calculation: {rec.calculation}</p>
                             </div>
                         ))}
                     </div>
