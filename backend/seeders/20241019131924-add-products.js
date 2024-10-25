@@ -5,83 +5,83 @@ module.exports = {
     return queryInterface.bulkInsert('Products', [
       {
         name: 'Product 1',
-        description: 'Description for product 1',
+        description: 'A unique item that blends functionality with style.',
         price: 100.00,
-        category: 'Category 1',
+        category: 'Electronics',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 2',
-        description: 'Description for product 2',
+        description: 'An innovative gadget for your daily needs.',
         price: 150.00,
-        category: 'Category 2',
+        category: 'Home Appliances',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 3',
-        description: 'Description for product 3',
-        price: 200.00,
-        category: 'Category 1',
+        description: 'A stylish accessory to complement your outfit.',
+        price: 80.00,
+        category: 'Fashion',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 4',
-        description: 'Description for product 4',
-        price: 250.00,
-        category: 'Category 3',
+        description: 'An essential tool for every household.',
+        price: 120.00,
+        category: 'Tools',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 5',
-        description: 'Description for product 5',
-        price: 300.00,
-        category: 'Category 2',
+        description: 'A game-changer in personal care.',
+        price: 60.00,
+        category: 'Beauty',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 6',
-        description: 'Description for product 6',
-        price: 120.00,
-        category: 'Category 1',
+        description: 'Advanced technology for health monitoring.',
+        price: 200.00,
+        category: 'Health',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 7',
-        description: 'Description for product 7',
-        price: 180.00,
-        category: 'Category 3',
+        description: 'A premium quality for the discerning buyer.',
+        price: 250.00,
+        category: 'Luxury',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 8',
-        description: 'Description for product 8',
-        price: 220.00,
-        category: 'Category 2',
+        description: 'A delightful treat for your taste buds.',
+        price: 30.00,
+        category: 'Food',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 9',
-        description: 'Description for product 9',
-        price: 140.00,
-        category: 'Category 1',
+        description: 'A multifunctional device for modern living.',
+        price: 90.00,
+        category: 'Electronics',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Product 10',
-        description: 'Description for product 10',
-        price: 160.00,
-        category: 'Category 3',
+        description: 'An eco-friendly choice for a sustainable future.',
+        price: 70.00,
+        category: 'Eco-Friendly',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
     ], {});
   },

@@ -1,28 +1,43 @@
 import React from 'react';
-import { clearUserLogs } from '../services/api'; // Import the clear user data function
 import { Link } from 'react-router-dom';
+import './Home.css';
 
 const Home = () => {
-  // Set and get userId from localStorage
-  localStorage.setItem('userId', "user123");
-  const userId = localStorage.getItem('userId');
-
-  // Function to handle clearing user data
-  const handleClearUserData = async () => {
-    // Clear user data from the database and localStorage
-    await clearUserLogs(userId); 
-    alert('User data cleared!');
-  };
-
   return (
-    <div>
-      <h1>Welcome to the Homepage</h1>
-      
-      {/* Button to clear user data */}
-      <button onClick={handleClearUserData}>
-        Clear All User Data
-      </button>
-      <Link to="/products">Products</Link>  
+    <div className="home-container">
+      <header className="hero">
+        <h1>Welcome to My Professional Portfolio</h1>
+        <p>Your expert in tech solutions, systems architecture, and AI-driven development.</p>
+        <Link to="/products" className="btn-main">Explore Product Recommendations</Link>
+      </header>
+
+      <section className="about">
+        <h2>About Me</h2>
+        <p>With extensive experience in project management, software architecture, and machine learning, I build tailored solutions to drive business innovation and success.</p>
+      </section>
+
+      <section className="skills">
+        <h2>Skills & Expertise</h2>
+        <ul>
+          <li>Systems Architecture</li>
+          <li>Cloud Development & Deployment</li>
+          <li>Product Recommendation Systems</li>
+          <li>Data Analytics & AI</li>
+        </ul>
+      </section>
+
+      <section className="portfolio">
+        <h2>Projects</h2>
+        <div className="portfolio-item">
+          <h3>Product Recommendation System</h3>
+          <p>Utilizing React, AWS, and MongoDB to deliver an optimized and scalable recommendation platform.</p>
+          <Link to="/products" className="btn-secondary">View Project</Link>
+        </div>
+      </section>
+
+      <footer>
+        <p>Contact me for consultancy or collaboration opportunities!</p>
+      </footer>
     </div>
   );
 };

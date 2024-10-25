@@ -1,54 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchProducts, logUserAction } from '../services/api';
+import { fetchProducts, logUserAction, fetchRecommendations, fetchProductDetails } from '../services/api';
+import ProductDetail from './ProductDetail';
+import './ProductList.css'; // Ensure your CSS file is imported
 
 const ProductList = () => {
     const userId = localStorage.getItem('userId');
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [products, setProducts] = useState([]); // Initialize as an empty array
+    const [products, setProducts] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
+    const [loadingRecommendations, setLoadingRecommendations] = useState(false); // Track loading state
 
     useEffect(() => {
         const loadProducts = async () => {
             try {
                 const response = await fetchProducts();
-                setProducts(response || []); // Use an empty array if `response.data` is undefined
+                setProducts(response || []);
+                await getRecommendations();
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         };
+        
+        const getRecommendations = async () => {
+            setLoadingRecommendations(true); // Start loading
+            try {
+                const response = await fetchRecommendations(userId);
+                if (response && Array.isArray(response.data.recommendedProducts)) {
+                    const details = response.data.recommendedProducts;
+                    
+                    if (Array.isArray(details)) {
+                        setRecommendations(details);
+                    } else {
+                        console.error("Expected product details to be an array:", details);
+                    }
+                } else {
+                    console.error("Unexpected response structure:", response);
+                }
+            } catch (error) {
+                console.error("Error fetching recommendations:", error);
+            } finally {
+                setLoadingRecommendations(false); // End loading
+            }
+        };
+
         loadProducts();
-    }, []);
+    }, [userId]);
 
     const handleProductClick = (product) => {
         logUserAction(userId, product.id, 'viewed');
-        setSelectedProduct(product); // Pass the entire product object, not just `product.id`
+        setSelectedProduct(product);
+    };
+
+    const handleRefreshRecommendations = async () => {
+        await getRecommendations(); // Fetch new recommendations
     };
 
     return (
-        <div>
-            <h2>Product List</h2>
-            
-            {/* Display selected product details */}
+        <div className="product-list-container">
+            <h2>Product Details</h2>
             {selectedProduct && (
                 <div className="product-details">
-                    <h3>{selectedProduct.name}</h3>
-                    <p>{selectedProduct.description}</p>
-                    <p>Price: ${selectedProduct.price}</p>
+                    <ProductDetail product={selectedProduct} />
                 </div>
             )}
-            
-            <ul>
+            <h2>Product List</h2>
+            <div className="product-list">
                 {products.map(product => (
-                    <li key={product.id} onClick={() => handleProductClick(product)} style={{ cursor: 'pointer' }}>
-                        {product.name} - ${product.price}
-                    </li>
+                    <div 
+                        key={product.id} 
+                        className={`product-item ${selectedProduct && selectedProduct.id === product.id ? 'selected' : ''}`} 
+                        onClick={() => handleProductClick(product)}
+                    >
+                        <h3>{product.name}</h3>
+                        <p>Price: ${product.price}</p>
+                    </div>
                 ))}
-            </ul>
-            
-            <br/>
-            <Link to="/recommendations">See Recommendations</Link>
-            <br/>
-            <Link to="/">Back to Homepage</Link>
+            </div>
+            <h2>Recommended Products</h2>
+            <div className="recommendation-controls">
+                <button 
+                    onClick={handleRefreshRecommendations} 
+                    disabled={loadingRecommendations || recommendations.length === 0}
+                >
+                    Refresh Recommendations
+                </button>
+            </div>
+            <div className="recommendation-list">
+                {recommendations.length > 0 ? (
+                    <div className="recommendation-items">
+                        {recommendations.map(rec => (
+                            <div key={rec.id} className="recommendation-item">
+                                <h4>{rec.name}</h4>
+                                <p>Price: ${rec.price}</p>
+                                <p>Score: {rec.recommendationScore}</p>
+                                <p>Calculation: {rec.calculationDetails}</p>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>No recommendations available.</p>
+                )} 
+            </div>
+            <div className="links">
+                <Link to="/">Back to Homepage</Link>
+            </div>
         </div>
     );
 };
