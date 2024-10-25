@@ -15,8 +15,14 @@ const ProductList = () => {
         const loadProducts = async () => {
             try {
                 const response = await fetchProducts();
+                if (response && Array.isArray(response)) {
+
                 setProducts(response || []);
-                await getRecommendations(); // Call the getRecommendations function after loading products
+                await getRecommendations();
+            } else {
+                console.error("Unexpected response structure or missing recommendations. Defaulting to empty array.");
+                 // Default to empty array if structure is unexpected
+            } // Call the getRecommendations function after loading products
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
@@ -29,22 +35,22 @@ const ProductList = () => {
         setLoadingRecommendations(true); // Start loading
         try {
             const response = await fetchRecommendations(userId);
-            if (response && Array.isArray(response.data.recommendedProducts)) {
-                const details = response.data.recommendedProducts;
-                if (Array.isArray(details)) {
-                    setRecommendations(details);
-                } else {
-                    console.error("Expected product details to be an array:", details);
-                }
+            console.log("Recommendations response:", response); // Log the response for debugging
+    
+            if (response && Array.isArray(response.data?.recommendedProducts)) {
+                setRecommendations(response.data.recommendedProducts);
             } else {
-                console.error("Unexpected response structure:", response);
+                console.error("Unexpected response structure or missing recommendations. Defaulting to empty array.");
+                setRecommendations([]); // Default to empty array if structure is unexpected
             }
         } catch (error) {
             console.error("Error fetching recommendations:", error);
+            setRecommendations([]); // Default to empty array in case of error
         } finally {
             setLoadingRecommendations(false); // End loading
         }
     };
+     
 
     const handleProductClick = (product) => {
         logUserAction(userId, product.id, 'viewed');
