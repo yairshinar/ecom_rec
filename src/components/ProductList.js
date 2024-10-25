@@ -16,36 +16,35 @@ const ProductList = () => {
             try {
                 const response = await fetchProducts();
                 setProducts(response || []);
-                await getRecommendations();
+                await getRecommendations(); // Call the getRecommendations function after loading products
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         };
-        
-        const getRecommendations = async () => {
-            setLoadingRecommendations(true); // Start loading
-            try {
-                const response = await fetchRecommendations(userId);
-                if (response && Array.isArray(response.data.recommendedProducts)) {
-                    const details = response.data.recommendedProducts;
-                    
-                    if (Array.isArray(details)) {
-                        setRecommendations(details);
-                    } else {
-                        console.error("Expected product details to be an array:", details);
-                    }
-                } else {
-                    console.error("Unexpected response structure:", response);
-                }
-            } catch (error) {
-                console.error("Error fetching recommendations:", error);
-            } finally {
-                setLoadingRecommendations(false); // End loading
-            }
-        };
 
-        loadProducts();
+        loadProducts(); // Initial load of products
     }, [userId]);
+
+    const getRecommendations = async () => {
+        setLoadingRecommendations(true); // Start loading
+        try {
+            const response = await fetchRecommendations(userId);
+            if (response && Array.isArray(response.data.recommendedProducts)) {
+                const details = response.data.recommendedProducts;
+                if (Array.isArray(details)) {
+                    setRecommendations(details);
+                } else {
+                    console.error("Expected product details to be an array:", details);
+                }
+            } else {
+                console.error("Unexpected response structure:", response);
+            }
+        } catch (error) {
+            console.error("Error fetching recommendations:", error);
+        } finally {
+            setLoadingRecommendations(false); // End loading
+        }
+    };
 
     const handleProductClick = (product) => {
         logUserAction(userId, product.id, 'viewed');
@@ -100,7 +99,8 @@ const ProductList = () => {
                     </div>
                 ) : (
                     <p>No recommendations available.</p>
-                )} 
+                )}
+                 
             </div>
             <div className="links">
                 <Link to="/">Back to Homepage</Link>
