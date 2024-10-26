@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchProducts, logUserAction, fetchRecommendations, clearUserLogs } from '../services/api';
 import ProductDetail from './ProductDetail';
-import './ProductList.css'; // Ensure your CSS file is imported
+import './ProductList.css';
 
 const ProductList = () => {
     const userId = localStorage.getItem('userId');
@@ -16,7 +16,7 @@ const ProductList = () => {
             try {
                 const response = await fetchProducts();
                 if (response && Array.isArray(response)) {
-                    setProducts(response || []);
+                    setProducts(response);
                     await getRecommendations();
                 }
             } catch (error) {
