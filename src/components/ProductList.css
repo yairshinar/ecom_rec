@@ -1,93 +1,106 @@
+/* ProductList.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
 .product-list-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     padding: 20px;
+    max-width: 600px; /* Set max width for better layout */
+    margin: auto;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
 }
 
 .product-details {
-    width: 50%; /* Center and set width for details */
     margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-list {
-    display: grid; /* Use grid for better control of layout */
-    grid-template-columns: repeat(5, 1fr); /* 5 products per row */
-    gap: 10px; /* Spacing between products */
-    width: 100%;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-item {
     border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 0.85rem; /* Smaller font size */
 }
 
 .product-item:hover {
     background-color: #f0f0f0;
 }
 
+.product-item.selected {
+    background-color: #e0e0e0; /* Highlight selected product */
+}
+
 .recommendation-controls {
-    margin-bottom: 10px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between; /* Space out buttons */
 }
 
 .recommendation-controls button {
-    padding: 10px 15px;
-    font-size: 0.85rem; /* Smaller font size */
+    flex: 1;
+    margin-right: 10px; /* Add space between buttons */
+    padding: 10px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.recommendation-controls button:disabled {
-    background-color: #ccc; /* Disabled button color */
-    cursor: not-allowed;
+.recommendation-controls button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
 }
 
 .recommendation-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
-.recommendation-items {
-    display: flex; /* Horizontal layout for recommendations */
-    justify-content: center;
-    flex-wrap: nowrap; /* Prevent wrapping */
-    overflow-x: auto; /* Allow scrolling for overflow */
+    margin-top: 20px;
 }
 
 .recommendation-item {
     border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px; /* Smaller padding */
-    margin: 0 5px; /* Margin between items */
-    text-align: center;
-    min-width: 80px; /* Minimum width for each recommendation */
-    font-size: 0.85rem; /* Smaller font size */
-}
-
-.explanation-box {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
     border-radius: 5px;
-    width: 80%; /* Centered explanation box */
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .links {
     margin-top: 20px;
+    text-align: center;
+}
+
+.links a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile styles */
+@media (max-width: 600px) {
+    .product-item, .recommendation-item {
+        padding: 10px; /* Smaller padding on mobile */
+    }
+
+    .recommendation-controls button {
+        margin-right: 5px; /* Adjust margin for buttons */
+    }
+
+    h2 {
+        font-size: 1.2em; /* Smaller headings on mobile */
+    }
 }

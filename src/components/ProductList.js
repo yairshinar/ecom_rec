@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchProducts, logUserAction, fetchRecommendations, fetchProductDetails } from '../services/api';
+import { fetchProducts, logUserAction, fetchRecommendations, clearUserLogs } from '../services/api';
 import ProductDetail from './ProductDetail';
 import './ProductList.css'; // Ensure your CSS file is imported
 
@@ -16,13 +16,11 @@ const ProductList = () => {
             try {
                 const response = await fetchProducts();
                 if (response && Array.isArray(response)) {
-
-                setProducts(response || []);
-                await getRecommendations();
-            } else {
-                console.error("Unexpected response structure or missing recommendations. Defaulting to empty array.");
-                 // Default to empty array if structure is unexpected
-            } // Call the getRecommendations function after loading products
+                    setProducts(response || []);
+                    await getRecommendations();
+                } else {
+                    console.error("Unexpected response structure or missing recommendations. Defaulting to empty array.");
+                }
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
@@ -36,7 +34,7 @@ const ProductList = () => {
         try {
             const response = await fetchRecommendations(userId);
             console.log("Recommendations response:", response); // Log the response for debugging
-    
+
             if (response && Array.isArray(response.data?.recommendedProducts)) {
                 setRecommendations(response.data.recommendedProducts);
             } else {
@@ -50,7 +48,6 @@ const ProductList = () => {
             setLoadingRecommendations(false); // End loading
         }
     };
-     
 
     const handleProductClick = (product) => {
         logUserAction(userId, product.id, 'viewed');
@@ -59,6 +56,11 @@ const ProductList = () => {
 
     const handleRefreshRecommendations = async () => {
         await getRecommendations(); // Fetch new recommendations
+    };
+
+    const handleClearUserLogs = async () => {
+        await clearUserLogs(userId); // Call the API to clear logs
+        alert("User logs cleared successfully!");
     };
 
     return (
@@ -78,7 +80,7 @@ const ProductList = () => {
                         onClick={() => handleProductClick(product)}
                     >
                         <h3>{product.name}</h3>
-                        <p>Price: ${product.price}</p>
+                        <p>Price: ${product.price.toFixed(2)}</p>
                     </div>
                 ))}
             </div>
@@ -90,6 +92,7 @@ const ProductList = () => {
                 >
                     Refresh Recommendations
                 </button>
+                <button onClick={handleClearUserLogs}>Clear User Logs</button>
             </div>
             <div className="recommendation-list">
                 {recommendations.length > 0 ? (
@@ -97,7 +100,7 @@ const ProductList = () => {
                         {recommendations.map(rec => (
                             <div key={rec.id} className="recommendation-item">
                                 <h4>{rec.name}</h4>
-                                <p>Price: ${rec.price}</p>
+                                <p>Price: ${rec.price.toFixed(2)}</p>
                                 <p>Score: {rec.score}</p>
                                 <p>Calculation: {rec.calculation}</p>
                             </div>
@@ -106,7 +109,6 @@ const ProductList = () => {
                 ) : (
                     <p>No recommendations available.</p>
                 )}
-                 
             </div>
             <div className="links">
                 <Link to="/">Back to Homepage</Link>
