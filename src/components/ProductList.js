@@ -98,12 +98,12 @@ const ProductList = () => {
                 {recommendations.length > 0 ? (
                     <div className="recommendation-items">
                         {recommendations.map(rec => (
-                            <div key={rec.id} className="recommendation-item">
-                                <h4>{rec.name}</h4>
-                                <p>Price: ${rec.price.toFixed(2)}</p>
-                                <p>Score: {rec.score}</p>
-                                <p>Calculation: {rec.calculation}</p>
-                            </div>
+                             <div key={rec.id} className="recommendation-item">
+                             <h4>{rec.name}</h4>
+                             <p>Price: ${(Number(rec.price) || 0).toFixed(2)}</p> {/* Ensure price is a number */}
+                             <p>Score: {rec.recommendationScore}</p>
+                             <p>Calculation: {rec.calculationDetails}</p>
+                         </div>
                         ))}
                     </div>
                 ) : (
