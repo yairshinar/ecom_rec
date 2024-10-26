@@ -80,7 +80,7 @@ const ProductList = () => {
                         onClick={() => handleProductClick(product)}
                     >
                         <h3>{product.name}</h3>
-                        <p>Price: ${product.price.toFixed(2)}</p>
+                        <p>Price: ${(Number(product.price) || 0).toFixed(2)}</p>
                     </div>
                 ))}
             </div>
