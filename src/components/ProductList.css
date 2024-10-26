@@ -1,106 +1,63 @@
-/* ProductList.css */
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
 .product-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    max-width: 600px; /* Set max width for better layout */
-    margin: auto;
-}
-
-h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
 }
 
 .product-details {
     margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
 
 .product-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .product-item {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 10px;
+    flex: 0 0 120px; /* Adjust width for smaller boxes */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.2s;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
 .product-item:hover {
-    background-color: #f0f0f0;
-}
-
-.product-item.selected {
-    background-color: #e0e0e0; /* Highlight selected product */
+    transform: scale(1.05);
 }
 
 .recommendation-controls {
     margin: 20px 0;
-    display: flex;
-    justify-content: space-between; /* Space out buttons */
-}
-
-.recommendation-controls button {
-    flex: 1;
-    margin-right: 10px; /* Add space between buttons */
-    padding: 10px;
-    background-color: #007bff; /* Bootstrap primary color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.recommendation-controls button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
 }
 
 .recommendation-list {
-    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .recommendation-item {
+    flex: 0 0 80px; /* Adjust width for smaller boxes */
+    background-color: #f0f0f0;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+    border-radius: 8px;
+    padding: 5px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.recommendation-item:hover {
+    transform: scale(1.05);
 }
 
 .links {
     margin-top: 20px;
-    text-align: center;
-}
-
-.links a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-.links a:hover {
-    text-decoration: underline;
-}
-
-/* Mobile styles */
-@media (max-width: 600px) {
-    .product-item, .recommendation-item {
-        padding: 10px; /* Smaller padding on mobile */
-    }
-
-    .recommendation-controls button {
-        margin-right: 5px; /* Adjust margin for buttons */
-    }
-
-    h2 {
-        font-size: 1.2em; /* Smaller headings on mobile */
-    }
 }

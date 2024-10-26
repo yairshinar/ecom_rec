@@ -9,7 +9,7 @@ const ProductList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [products, setProducts] = useState([]);
     const [recommendations, setRecommendations] = useState([]);
-    const [loadingRecommendations, setLoadingRecommendations] = useState(false); // Track loading state
+    const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
     useEffect(() => {
         const loadProducts = async () => {
@@ -18,34 +18,26 @@ const ProductList = () => {
                 if (response && Array.isArray(response)) {
                     setProducts(response || []);
                     await getRecommendations();
-                } else {
-                    console.error("Unexpected response structure or missing recommendations. Defaulting to empty array.");
                 }
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         };
 
-        loadProducts(); // Initial load of products
+        loadProducts();
     }, [userId]);
 
     const getRecommendations = async () => {
-        setLoadingRecommendations(true); // Start loading
+        setLoadingRecommendations(true);
         try {
             const response = await fetchRecommendations(userId);
-            console.log("Recommendations response:", response); // Log the response for debugging
-
             if (response && Array.isArray(response.data?.recommendedProducts)) {
                 setRecommendations(response.data.recommendedProducts);
-            } else {
-                console.error("Unexpected response structure or missing recommendations. Defaulting to empty array.");
-                setRecommendations([]); // Default to empty array if structure is unexpected
             }
         } catch (error) {
             console.error("Error fetching recommendations:", error);
-            setRecommendations([]); // Default to empty array in case of error
         } finally {
-            setLoadingRecommendations(false); // End loading
+            setLoadingRecommendations(false);
         }
     };
 
@@ -55,28 +47,33 @@ const ProductList = () => {
     };
 
     const handleRefreshRecommendations = async () => {
-        await getRecommendations(); // Fetch new recommendations
+        await getRecommendations();
     };
 
     const handleClearUserLogs = async () => {
-        await clearUserLogs(userId); // Call the API to clear logs
+        await clearUserLogs(userId);
         alert("User logs cleared successfully!");
     };
 
     return (
         <div className="product-list-container">
-            <h2>Product Details</h2>
-            {selectedProduct && (
-                <div className="product-details">
-                    <ProductDetail product={selectedProduct} />
-                </div>
-            )}
+            <div className="product-details">
+                {selectedProduct ? (
+                    <>
+                        <h2>Product Details</h2>
+                        <ProductDetail product={selectedProduct} />
+                    </>
+                ) : (
+                    <h2>Select a product to see details</h2>
+                )}
+            </div>
+
             <h2>Product List</h2>
             <div className="product-list">
                 {products.map(product => (
                     <div 
                         key={product.id} 
-                        className={`product-item ${selectedProduct && selectedProduct.id === product.id ? 'selected' : ''}`} 
+                        className="product-item" 
                         onClick={() => handleProductClick(product)}
                     >
                         <h3>{product.name}</h3>
@@ -84,26 +81,28 @@ const ProductList = () => {
                     </div>
                 ))}
             </div>
+
             <h2>Recommended Products</h2>
             <div className="recommendation-controls">
                 <button 
                     onClick={handleRefreshRecommendations} 
-                    disabled={loadingRecommendations || recommendations.length === 0}
+                    disabled={loadingRecommendations}
                 >
                     Refresh Recommendations
                 </button>
                 <button onClick={handleClearUserLogs}>Clear User Logs</button>
             </div>
+
             <div className="recommendation-list">
                 {recommendations.length > 0 ? (
                     <div className="recommendation-items">
                         {recommendations.map(rec => (
-                             <div key={rec.id} className="recommendation-item">
-                             <h4>{rec.name}</h4>
-                             <p>Price: ${(Number(rec.price) || 0).toFixed(2)}</p> {/* Ensure price is a number */}
-                             <p>Score: {rec.recommendationScore}</p>
-                             <p>Calculation: {rec.calculationDetails}</p>
-                         </div>
+                            <div key={rec.id} className="recommendation-item">
+                                <h4>{rec.name}</h4>
+                                <p>Price: ${(Number(rec.price) || 0).toFixed(2)}</p>
+                                <p>Score: {rec.score}</p>
+                                <p>Calculation: {rec.calculation}</p>
+                            </div>
                         ))}
                     </div>
                 ) : (
