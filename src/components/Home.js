@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
+import umlDiagram from './assets/images/ai commerce-uml.jpg'; // Replace with your actual image path
+import architectureDesign from './assets/images/ai commerce-Architectual Design.jpg'; // Replace with your actual image path
 
 const Home = () => {
   return (
@@ -32,6 +34,14 @@ const Home = () => {
           <h3>Product Recommendation System</h3>
           <p>Utilizing React, AWS, and MongoDB to deliver an optimized and scalable recommendation platform.</p>
           <Link to="/products" className="btn-secondary">View Project</Link>
+        </div>
+      </section>
+
+      <section className="designs">
+        <h2>Architectural Design & UML Diagrams</h2>
+        <div className="design-images">
+          <img src={umlDiagram} alt="UML Diagram" style={{ width: '100%', maxWidth: '600px', marginBottom: '20px' }} />
+          <img src={architectureDesign} alt="Architecture Design" style={{ width: '100%', maxWidth: '600px' }} />
         </div>
       </section>
 
