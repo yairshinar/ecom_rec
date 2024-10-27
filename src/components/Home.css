@@ -1,54 +1,68 @@
 .home-container {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    color: #333;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  color: #333;
+  max-width: 100%;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: 1.8em;
+}
+
+.hero p {
+  font-size: 1em;
+  color: #555;
+}
+
+.projects {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.project-card {
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.project-card h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.project-card p {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.btn-project {
+  display: inline-block;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+@media (min-width: 600px) {
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
-  
-  .hero {
-    text-align: center;
-    margin-bottom: 40px;
-  } 
-  
-  .hero h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
+
+  .project-card h3 {
+    font-size: 1.5em;
   }
-  
-  .hero p {
-    font-size: 1.2em;
-    color: #555;
+
+  .project-card p {
+    font-size: 1em;
   }
-  
-  .btn-main {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-  }
-  
-  .about, .skills, .portfolio {
-    margin-bottom: 30px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .portfolio-item {
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-  }
-  
-  .btn-secondary {
-    display: inline-block;
-    margin-top: 10px;
-    color: #007bff;
-    text-decoration: none;
-  }
-  
+}
