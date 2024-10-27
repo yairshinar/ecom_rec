@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
-import umlDiagram from './assets/images/ai commerce-uml.jpg'; // Replace with your actual image path
-import architectureDesign from './assets/images/ai commerce-Architectual Design.jpg'; // Replace with your actual image path
+import umlDiagram from '/assets/images/ai commerce-uml.jpg'; // Replace with your actual image path
+import architectureDesign from '/assets/images/ai commerce-Architectual Design.jpg'; // Replace with your actual image path
 
 const Home = () => {
   return (
