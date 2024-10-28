@@ -1,68 +1,136 @@
-/* Home.css */
-
-/* Mobile optimization */
-@media (max-width: 768px) {
-  .image-gallery {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .thumbnail img {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .project-card {
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-
-  .btn-project {
-    background-color: #007bff;
-    color: #fff;
-    font-size: 1.2em;
-    padding: 12px 20px;
-    text-align: center;
-    display: block;
-    margin: 10px 0;
-    border-radius: 8px;
-    transition: background-color 0.3s;
-  }
-
-  .btn-project:hover {
-    background-color: #0056b3;
-  }
+.home-container {
+  padding: 20px;
 }
 
-/* Modal for better mobile display */
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.projects {
+  display: flex; /* Use flexbox for horizontal layout */
+  flex-wrap: wrap; /* Allow wrapping of cards */
+  justify-content: flex-start; /* Align items to the start for closer cards */
+}
+
+.project-card {
+  background-color: #fafafa; /* Lighter background color */
+  border: 1px solid #dee2e6; /* Border color */
+  border-radius: 15px; /* More rounded corners */
+  padding: 20px;
+  margin: 5px; /* Closer spacing for all sides */
+  width: calc(22% - 10px); /* Adjust width for horizontal closeness */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  transition: transform 0.3s;
+}
+
+.project-card:hover {
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.image-gallery {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.thumbnail {
+  text-align: center;
+  cursor: pointer;
+  margin: 0 5px; /* Closer margins for thumbnails */
+  flex: 1;
+}
+
+.thumbnail img {
+  width: 100%; /* Responsive thumbnail size */
+  border-radius: 10px; /* More rounded corners for images */
+  border: 2px solid #ccc; /* Outline for the images */
+  transition: transform 0.2s;
+}
+
+.thumbnail img:hover {
+  transform: scale(1.05); /* Zoom effect on hover */
+}
+
+.project-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.btn-project {
+  background-color:  #28a745; /* Attractive blue color */
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px; /* More rounded buttons */
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-project:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  transform: scale(1.05);
+}
+
+.btn-go {
+  background-color: #28a745; /* Green color for the 'Go' button */
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px; /* More rounded corners */
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-go:hover {
+  background-color: #218838; /* Darker shade on hover */
+  transform: scale(1.05);
+}
+
+.btn-link {
+  display: flex;
+  align-items: center;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
 .modal {
   position: fixed;
-  top: 0;
+  z-index: 1000;
   left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
-  justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
+  justify-content: center;
 }
 
 .modal-content {
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
 }
 
 .close {
   position: absolute;
   top: 10px;
-  right: 10px;
-  font-size: 24px;
+  right: 20px;
+  font-size: 30px;
+  color: white;
   cursor: pointer;
-  color: #fff;
+}
+
+footer {
+  text-align: center;
+  margin-top: 30px;
 }
