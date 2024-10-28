@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Home.css';
-import umlDiagram from '../assets/images/ai commerce-uml.jpg';
-import architectureDesign from '../assets/images/ai commerce-Architectual Design.jpg';
-import githubIcon from '../assets/icons/github.svg'; // Make sure to have an appropriate GitHub icon
- 
+import erdImage from '../assets/images/ai-commerce-ERD.jpg'; // Ensure ERD image is added to assets
+
 const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -30,7 +25,7 @@ const Home = () => {
         <div className="project-card">
           <h3>Product Recommendation System</h3>
           <p>An AI-powered system that suggests products based on user behavior and preferences.</p>
-          
+
           <div className="image-gallery">
             <div className="thumbnail" onClick={() => openModal(umlDiagram)}>
               <img src={umlDiagram} alt="UML Diagram" />
@@ -40,6 +35,10 @@ const Home = () => {
               <img src={architectureDesign} alt="Architecture Design" />
               <h4>Architecture Design</h4>
             </div>
+            <div className="thumbnail" onClick={() => openModal(erdImage)}>
+              <img src={erdImage} alt="ERD" />
+              <h4>ERD</h4>
+            </div>
           </div>
 
           <div className="project-links">
@@ -47,45 +46,10 @@ const Home = () => {
             <a href="https://github.com/yourusername/product-recommendation-system" target="_blank" rel="noopener noreferrer" className="btn-link">
               <img src={githubIcon} alt="GitHub" className="icon" /> GitHub
             </a>
-             
           </div>
         </div>
 
-        <div className="project-card">
-          <h3>Data Analytics Dashboard</h3>
-          <p>A comprehensive dashboard offering real-time insights for data-driven decisions.</p>
-          <div className="project-links">
-            <Link to="/analytics" className="btn-project">View Project</Link>
-            <a href="https://github.com/yourusername/data-analytics-dashboard" target="_blank" rel="noopener noreferrer" className="btn-link">
-              <img src={githubIcon} alt="GitHub" className="icon" /> GitHub
-            </a>
-             
-          </div>
-        </div>
-
-        <div className="project-card">
-          <h3>Automated Reporting Tool</h3>
-          <p>A tool that automates reporting processes, saving time and reducing errors.</p>
-          <div className="project-links">
-            <Link to="/reporting" className="btn-project">View Project</Link>
-            <a href="https://github.com/yourusername/automated-reporting-tool" target="_blank" rel="noopener noreferrer" className="btn-link">
-              <img src={githubIcon} alt="GitHub" className="icon" /> GitHub
-            </a>
-            
-          </div>
-        </div>
-
-        <div className="project-card">
-          <h3>E-commerce Platform Optimization</h3>
-          <p>Enhanced performance and usability for a large-scale e-commerce site.</p>
-          <div className="project-links">
-            <Link to="/ecommerce" className="btn-project">View Project</Link>
-            <a href="https://github.com/yourusername/ecommerce-optimization" target="_blank" rel="noopener noreferrer" className="btn-link">
-              <img src={githubIcon} alt="GitHub" className="icon" /> GitHub
-            </a>
-             
-          </div>
-        </div>
+        {/* Repeat for other projects as needed */}
       </section>
 
       {isModalOpen && (

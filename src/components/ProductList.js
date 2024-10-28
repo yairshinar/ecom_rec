@@ -57,23 +57,52 @@ const ProductList = () => {
 
     return (
         <div className="product-recommendation-container">
-            <aside className="recommendations-sidebar">
-                <h2>Recommended for You</h2>
+            <h2>Product Recommendation System</h2>
+            <p>Select a product to see details and receive personalized recommendations based on your preferences.</p>
+            
+            <div className="product-main">
+                <section className="product-list">
+                    <h3>Products</h3>
+                    <div className="product-items">
+                        {products.map(product => (
+                            <div 
+                                key={product.id} 
+                                className="product-item" 
+                                onClick={() => handleProductClick(product)}
+                            >
+                                <h4>{product.name}</h4>
+                                <p>${(Number(product.price) || 0).toFixed(2)}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="product-details">
+                    {selectedProduct ? (
+                        <>
+                            <h3>Product Details</h3>
+                            <ProductDetail product={selectedProduct} />
+                        </>
+                    ) : (
+                        <h3>Select a product to view details</h3>
+                    )}
+                </section>
+            </div>
+
+            <section className="recommendations">
+                <h3>Recommended for You</h3>
                 <div className="recommendation-controls">
-                    <button 
-                        onClick={handleRefreshRecommendations} 
-                        disabled={loadingRecommendations}
-                    >
+                    <button onClick={handleRefreshRecommendations} disabled={loadingRecommendations}>
                         Refresh
                     </button>
                     <button onClick={handleClearUserLogs}>Clear Logs</button>
                 </div>
-                <div className="recommendation-list">
+                <div className="recommendation-items">
                     {recommendations.length > 0 ? (
                         recommendations.map(rec => (
                             <div key={rec.id} className="recommendation-item">
                                 <h4>{rec.name}</h4>
-                                <p>Price: ${(Number(rec.price) || 0).toFixed(2)}</p>
+                                <p>${(Number(rec.price) || 0).toFixed(2)}</p>
                                 <p>Score: {rec.score}</p>
                             </div>
                         ))
@@ -81,34 +110,7 @@ const ProductList = () => {
                         <p>No recommendations available.</p>
                     )}
                 </div>
-            </aside>
-
-            <main className="product-display">
-                <div className="product-list">
-                    <h2>Product Catalog</h2>
-                    {products.map(product => (
-                        <div 
-                            key={product.id} 
-                            className="product-item" 
-                            onClick={() => handleProductClick(product)}
-                        >
-                            <h3>{product.name}</h3>
-                            <p>Price: ${(Number(product.price) || 0).toFixed(2)}</p>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="product-details">
-                    {selectedProduct ? (
-                        <>
-                            <h2>{selectedProduct.name}</h2>
-                            <ProductDetail product={selectedProduct} />
-                        </>
-                    ) : (
-                        <h2>Select a product to view details</h2>
-                    )}
-                </div>
-            </main>
+            </section>
 
             <footer>
                 <Link to="/">Back to Homepage</Link>
