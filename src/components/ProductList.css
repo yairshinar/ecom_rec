@@ -1,127 +1,44 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    margin: 0;
-    padding: 0;
-}
-
-.product-list-container {
-    padding: 1rem;
-    max-width: 100%;
-    margin: auto;
-}
-
-h2 {
-    text-align: center;
-    color: #007bff;
-    margin-bottom: 0.5rem;
-}
-
-/* Product Details */
-.product-details {
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Product List & Recommendations */
-.product-list, .recommendation-list {
+.product-recommendation-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .product-recommendation-container {
+        flex-direction: row;
+    }
+}
+
+.recommendations-sidebar {
+    width: 100%;
+    padding: 16px;
+    background-color: #f4f4f4;
+    order: 2;
+}
+
+.product-display {
+    flex: 1;
+    padding: 16px;
+}
+
+.product-list, .product-details {
+    margin-bottom: 16px;
 }
 
 .product-item, .recommendation-item {
-    background: #ffffff;
-    padding: 0.75rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    padding: 8px;
+    margin: 8px 0;
+    background: #fff;
+    border: 1px solid #ddd;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
 .product-item:hover, .recommendation-item:hover {
-    transform: scale(1.05);
+    background: #f0f8ff;
 }
 
-/* Text Styling */
-.product-item h3, .recommendation-item h4 {
-    font-size: 1.25rem;
-    color: #007bff;
-    margin: 0;
-}
-
-.product-item p, .recommendation-item p {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 0.25rem 0;
-}
-
-/* Recommendation Controls */
-.recommendation-controls {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 1rem;
-}
-
-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:disabled {
-    background-color: #999;
-}
-
-button:hover:not(:disabled) {
-    background-color: #0056b3;
-}
-
-/* Links */
-.links {
-    margin-top: 1.5rem;
+footer {
+    padding: 10px;
     text-align: center;
-}
-
-.links a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.links a:hover {
-    text-decoration: underline;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 600px) {
-    .product-list-container {
-        padding: 0.5rem;
-    }
-    
-    h2 {
-        font-size: 1.5rem;
-    }
-    
-    .product-item h3, .recommendation-item h4 {
-        font-size: 1rem;
-    }
-
-    .product-item p, .recommendation-item p {
-        font-size: 0.8rem;
-    }
-
-    button {
-        padding: 0.5rem;
-        font-size: 0.9rem;
-    }
 }

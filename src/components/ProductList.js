@@ -56,62 +56,63 @@ const ProductList = () => {
     };
 
     return (
-        <div className="product-list-container">
-            <div className="product-details">
-                {selectedProduct ? (
-                    <>
-                        <h2>Product Details</h2>
-                        <ProductDetail product={selectedProduct} />
-                    </>
-                ) : (
-                    <h2>Select a product to see details</h2>
-                )}
-            </div>
-
-            <h2>Product List</h2>
-            <div className="product-list">
-                {products.map(product => (
-                    <div 
-                        key={product.id} 
-                        className="product-item" 
-                        onClick={() => handleProductClick(product)}
+        <div className="product-recommendation-container">
+            <aside className="recommendations-sidebar">
+                <h2>Recommended for You</h2>
+                <div className="recommendation-controls">
+                    <button 
+                        onClick={handleRefreshRecommendations} 
+                        disabled={loadingRecommendations}
                     >
-                        <h3>{product.name}</h3>
-                        <p>Price: ${(Number(product.price) || 0).toFixed(2)}</p>
-                    </div>
-                ))}
-            </div>
-
-            <h2>Recommended Products</h2>
-            <div className="recommendation-controls">
-                <button 
-                    onClick={handleRefreshRecommendations} 
-                    disabled={loadingRecommendations}
-                >
-                    Refresh Recommendations
-                </button>
-                <button onClick={handleClearUserLogs}>Clear User Logs</button>
-            </div>
-
-            <div className="recommendation-list">
-                {recommendations.length > 0 ? (
-                    <div className="recommendation-items">
-                        {recommendations.map(rec => (
+                        Refresh
+                    </button>
+                    <button onClick={handleClearUserLogs}>Clear Logs</button>
+                </div>
+                <div className="recommendation-list">
+                    {recommendations.length > 0 ? (
+                        recommendations.map(rec => (
                             <div key={rec.id} className="recommendation-item">
                                 <h4>{rec.name}</h4>
                                 <p>Price: ${(Number(rec.price) || 0).toFixed(2)}</p>
                                 <p>Score: {rec.score}</p>
-                                <p>Calculation: {rec.calculation}</p>
                             </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p>No recommendations available.</p>
-                )}
-            </div>
-            <div className="links">
+                        ))
+                    ) : (
+                        <p>No recommendations available.</p>
+                    )}
+                </div>
+            </aside>
+
+            <main className="product-display">
+                <div className="product-list">
+                    <h2>Product Catalog</h2>
+                    {products.map(product => (
+                        <div 
+                            key={product.id} 
+                            className="product-item" 
+                            onClick={() => handleProductClick(product)}
+                        >
+                            <h3>{product.name}</h3>
+                            <p>Price: ${(Number(product.price) || 0).toFixed(2)}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="product-details">
+                    {selectedProduct ? (
+                        <>
+                            <h2>{selectedProduct.name}</h2>
+                            <ProductDetail product={selectedProduct} />
+                        </>
+                    ) : (
+                        <h2>Select a product to view details</h2>
+                    )}
+                </div>
+            </main>
+
+            <footer>
                 <Link to="/">Back to Homepage</Link>
-            </div>
+            </footer>
         </div>
     );
 };
