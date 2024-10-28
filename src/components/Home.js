@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Home.css';
 import umlDiagram from '../assets/images/ai-commerce-uml.jpg';
 import architectureDesign from '../assets/images/ai-commerce-architecture.jpg';
-import erdImage from '../assets/images/ai-commerce-erd.svg';
+import erdImage from '../assets/images/ai-commerce-ERD.svg';
 import githubIcon from '../assets/icons/github.svg';
 
 const Home = () => {
