@@ -53,7 +53,7 @@ const Home = () => {
           {/* Project Links */}
           <div className="project-links">
             <Link to="/products" className="btn-project">View Project</Link>
-            <a href="https://github.com/yourusername/product-recommendation-system" target="_blank" rel="noopener noreferrer" className="btn-link">
+            <a href="https://github.com/yairshinar/ecom_rec" target="_blank" rel="noopener noreferrer" className="btn-link">
               <img src={githubIcon} alt="GitHub" className="icon" /> GitHub
             </a>
           </div>
