@@ -1,48 +1,111 @@
 .product-recommendation-container {
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
     padding: 16px;
     font-family: Arial, sans-serif;
-}
-
-h2, h3 {
     color: #333;
 }
 
-.product-main {
-    display: flex;
-    flex-direction: column;
+header, footer {
+    text-align: center;
+    padding: 10px;
+    color: #555;
 }
 
-.product-list, .product-details, .recommendations {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fafafa;
+h2 {
+    font-size: 24px;
+    margin-bottom: 16px; /* Added margin for better spacing */
+}
+
+.product-main, .recommendations {
+    margin-top: 16px;
 }
 
 .product-items, .recommendation-items {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    padding: 0 10px;
 }
 
 .product-item, .recommendation-item {
-    padding: 10px;
     background: #fff;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 8px; /* Increased border radius for a softer look */
     text-align: center;
+    padding: 16px; /* Increased padding for better spacing */
     cursor: pointer;
-    transition: background 0.3s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .product-item:hover, .recommendation-item:hover {
-    background: #f0f8ff;
+    transform: scale(1.05);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* Enhanced shadow effect */
 }
 
-footer {
-    padding-top: 20px;
-    text-align: center;
+.product-icon, .recommendation-icon {
+    font-size: 48px;
+    margin-bottom: 12px; /* Increased margin for better spacing */
+    color: #007bff; /* Changed icon color for better visibility */
+}
+
+.recommendation-details {
+    text-align: left; /* Align text to the left for better readability */
+    margin-top: 10px; /* Added margin for spacing */
+}
+
+h4 {
+    font-size: 18px; /* Increased font size for product names */
+    margin: 0 0 8px; /* Adjusted margin for better spacing */
+}
+
+.score {
+    font-size: 14px; /* Increased font size for scores */
+    color: #888;
+    font-weight: bold;
+    margin: 5px 0; /* Added margin for spacing */
+}
+
+.score span {
+    color: #4CAF50; /* Adjusted the color to make it stand out */
+    font-size: 16px; /* Increased font size for score value */
+    font-weight: 700;
+}
+
+.recommendation-contribution {
+    font-size: 12px; /* Font size for contributions */
+    color: #555; /* Darker color for contrast */
+    margin: 2px 0; /* Spacing between contributions */
+}
+
+.recommendation-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+button {
+    padding: 8px 16px;
+    margin: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.score {
+    font-size: 14px; /* Font size for final score */
+    color: #4CAF50; /* Green color for visibility */
+    font-weight: bold;
+    margin: 5px 0; /* Spacing between contributions */
 }
