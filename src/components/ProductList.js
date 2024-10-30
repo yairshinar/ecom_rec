@@ -4,33 +4,11 @@ import { fetchProducts, logUserAction, fetchRecommendations, clearUserLogs } fro
 import ProductDetail from './ProductDetail';
 import './ProductList.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeadphones, faMobileAlt, faLaptop, faGamepad, faDesktop, faChargingStation, faHeartbeat, faBriefcase, faHdd, faClock } from '@fortawesome/free-solid-svg-icons';
+import icons from '../utils/icons';
 
 const getCategoryIcon = (category) => {
-    switch (category) {
-        case 'Electronics':
-            return faMobileAlt; // Icon for electronics
-        case 'Wearables':
-            return faClock; // Icon for wearables
-        case 'Audio':
-            return faHeadphones; // Icon for audio devices
-        case 'Gaming':
-            return faGamepad; // Icon for gaming
-        case 'Computers':
-            return faDesktop; // Icon for computers
-        case 'Accessories':
-            return faChargingStation; // Icon for chargers
-        case 'Health':
-            return faHeartbeat; // Icon for health devices
-        case 'Office':
-            return faBriefcase; // Icon for office supplies
-        case 'Storage':
-            return faHdd; // Icon for storage devices
-        default:
-            return faMobileAlt; // Default icon
-    }
+    return icons[category] || icons['Electronics'];
 };
-
 
 const ProductList = () => {
     const userId = localStorage.getItem('userId');
@@ -60,7 +38,14 @@ const ProductList = () => {
         try {
             const response = await fetchRecommendations(userId);
             if (response && Array.isArray(response.data?.recommendedProducts)) {
-                const sortedRecommendations = response.data.recommendedProducts.sort((a, b) => b.score - a.score);
+                const enrichedRecommendations = response.data.recommendedProducts.map(rec => {
+                    const product = products.find(p => p.product_id === rec.id);
+                    return {
+                        ...rec,
+                        ...product,
+                    };
+                });
+                const sortedRecommendations = enrichedRecommendations.sort((a, b) => b.score - a.score);
                 setRecommendations(sortedRecommendations);
             }
         } catch (error) {
@@ -70,13 +55,12 @@ const ProductList = () => {
         }
     };
 
-    const handleProductClick = (product) => {
-        logUserAction(userId, product.id, 'viewed');
+    const handleProductClick = (product, isRecommendation = false) => {
+        const actionType = isRecommendation ? 'recommendation_viewed' : 'viewed';
+        if (product && product.product_id) {
+            logUserAction(userId, product.product_id, actionType);
+        }
         setSelectedProduct(product);
-    };
-
-    const handleRefreshRecommendations = async () => {
-        await getRecommendations();
     };
 
     const handleClearUserLogs = async () => {
@@ -95,7 +79,7 @@ const ProductList = () => {
                 <div className="product-items">
                     {products.map(product => (
                         <div 
-                            key={product.id} 
+                            key={product.product_id} 
                             className="product-item" 
                             onClick={() => handleProductClick(product)}
                         >
@@ -105,13 +89,18 @@ const ProductList = () => {
                         </div>
                     ))}
                 </div>
+                
+                <div className="product-detail-area">
+                    {selectedProduct && (
+                        <ProductDetail product={selectedProduct} />
+                    )}
+                </div>
             </section>
 
             <section className="recommendations">
                 <h3>Personalized Recommendations</h3>
-                <p>Refresh recommendations to get the latest personalized suggestions.</p>
                 <div className="recommendation-controls">
-                    <button onClick={handleRefreshRecommendations} disabled={loadingRecommendations}>
+                    <button onClick={getRecommendations} disabled={loadingRecommendations}>
                         Get Latest Recommendations
                     </button>
                     <button onClick={handleClearUserLogs}>Clear User Data</button>
@@ -119,20 +108,23 @@ const ProductList = () => {
                 <div className="recommendation-items">
                     {recommendations.length > 0 ? (
                         recommendations.map(rec => {
-                            const collaborativeScore = (Number(rec.collaborativeContribution) || 0);
-                            const contentScore = (Number(rec.contentContribution) || 0);
-                            const finalScore = (collaborativeScore * 0.7 + contentScore * 0.3).toFixed(0); // Combined calculation
-
+                            const collaborativeScore = rec.collaborativeContribution || 0;
+                            const contentScore = rec.contentContribution || 0;
+                            const finalScore = rec.score;
                             return (
-                                <div key={rec.id} className="recommendation-item">
+                                <div 
+                                    key={rec.id} 
+                                    className="recommendation-item" 
+                                    onClick={() => handleProductClick(rec, true)}
+                                >
                                     <FontAwesomeIcon icon={getCategoryIcon(rec.category)} className="recommendation-icon" />
                                     <h4>{rec.name}</h4>
                                     <p>${(Number(rec.price) || 0).toFixed(0)}</p>
                                     <p className="score">
                                         Score: <span>{finalScore}</span>
                                         <br />
-                                        (<span>{(collaborativeScore * 0.7).toFixed(0)} From 0.7* Collaboration</span> + 
-                                        <span>{(contentScore * 0.3).toFixed(0)} From 0.3* Content)</span>
+                                        (<span>{(collaborativeScore * 100).toFixed(0)} from User Views Collaboration</span> + 
+                                        <span>{(contentScore* 100).toFixed(0)} from Description Similarity)</span>
                                     </p>
                                 </div>
                             );

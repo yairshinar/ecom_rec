@@ -1,0 +1,15 @@
+/* Remove any modal or popup styles */
+.product-detail {
+    position: static;
+    display: block;
+    width: 100%; /* or adjust based on your layout needs */
+    padding: 20px;
+    background-color: #f8f9fa; /* Optional styling */
+    border: 1px solid #ddd; /* Optional styling */
+}
+
+/* Optional adjustments for layout consistency */
+.product-detail-area {
+    margin-top: 20px;
+    width: 100%;
+}

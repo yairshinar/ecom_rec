@@ -1,111 +1,83 @@
 .product-recommendation-container {
-    max-width: 900px;
+    max-width: 800px;
     margin: auto;
-    padding: 16px;
+    padding: 10px;
     font-family: Arial, sans-serif;
     color: #333;
 }
 
-header, footer {
-    text-align: center;
-    padding: 10px;
-    color: #555;
+.product-main {
+    display: flex;
+    margin-top: 10px;
 }
 
-h2 {
-    font-size: 24px;
-    margin-bottom: 16px; /* Added margin for better spacing */
-}
-
-.product-main, .recommendations {
-    margin-top: 16px;
-}
-
-.product-items, .recommendation-items {
+.product-items {
+    flex: 3;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px;
-    padding: 0 10px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
 }
 
 .product-item, .recommendation-item {
     background: #fff;
     border: 1px solid #ddd;
-    border-radius: 8px; /* Increased border radius for a softer look */
-    text-align: center;
-    padding: 16px; /* Increased padding for better spacing */
+    border-radius: 4px;
+    padding: 8px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    font-size: 0.8em;
 }
 
 .product-item:hover, .recommendation-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* Enhanced shadow effect */
+    transform: scale(1.02);
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .product-icon, .recommendation-icon {
-    font-size: 48px;
-    margin-bottom: 12px; /* Increased margin for better spacing */
-    color: #007bff; /* Changed icon color for better visibility */
+    font-size: 32px;
+    margin-bottom: 6px;
+    color: #007bff;
 }
 
-.recommendation-details {
-    text-align: left; /* Align text to the left for better readability */
-    margin-top: 10px; /* Added margin for spacing */
+.product-detail-area {
+    width: 250px; /* Fixed width */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    position: sticky; /* Sticky position to keep it fixed on scroll */
+    top: 10px;
+    margin-left: 10px;
 }
 
-h4 {
-    font-size: 18px; /* Increased font size for product names */
-    margin: 0 0 8px; /* Adjusted margin for better spacing */
-}
-
-.score {
-    font-size: 14px; /* Increased font size for scores */
-    color: #888;
-    font-weight: bold;
-    margin: 5px 0; /* Added margin for spacing */
-}
-
-.score span {
-    color: #4CAF50; /* Adjusted the color to make it stand out */
-    font-size: 16px; /* Increased font size for score value */
-    font-weight: 700;
-}
-
-.recommendation-contribution {
-    font-size: 12px; /* Font size for contributions */
-    color: #555; /* Darker color for contrast */
-    margin: 2px 0; /* Spacing between contributions */
-}
-
-.recommendation-controls {
-    display: flex;
-    justify-content: space-between;
+.recommendations {
     margin-top: 10px;
 }
 
+.recommendation-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    padding: 0;
+}
+
+.recommendation-controls button {
+    font-size: 0.8em;
+    padding: 6px 12px;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 4px 0;
+}
+
+.score, .recommendation-description, .recommendation-contribution {
+    font-size: 0.75em;
+    color: #666;
+}
+
 button {
-    padding: 8px 16px;
-    margin: 5px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-.score {
-    font-size: 14px; /* Font size for final score */
-    color: #4CAF50; /* Green color for visibility */
-    font-weight: bold;
-    margin: 5px 0; /* Spacing between contributions */
+    font-size: 0.8em;
+    padding: 6px 10px;
+    margin: 4px;
 }

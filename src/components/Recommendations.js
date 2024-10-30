@@ -38,7 +38,7 @@ const Recommendations = () => {
             <ul>
                 {productDetails.length > 0 ? (
                     productDetails.map(product => (
-                        <li key={product.id}> {/* Adjust the key based on your data structure */}
+                        <li key={product.product_id}> {/* Adjust the key based on your data structure */}
                             {product.name} - Price: ${product.price} {/* Adjust according to your data structure */}
                         </li>
                     ))

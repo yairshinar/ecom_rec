@@ -1,83 +1,96 @@
 import { MongoClient } from 'mongodb';
 
-// Access environment variables
-const username = process.env.MONGODB_USER;
-const password = process.env.MONGODB_PASSWORD;
+import pkg from 'pg';
+const { Pool } = pkg;
+import { SVD } from 'ml-matrix';
+import cosineSimilarity from 'compute-cosine-similarity'; // Importing the cosine similarity library
 
-const uri = `mongodb+srv://${username}:${encodeURIComponent(password)}@cluster0.djrmv.mongodb.net/activityDB?retryWrites=true&w=majority`;
-
-let client;
+// MongoDB and PostgreSQL setup
+const mongoUri = `mongodb+srv://${username}:${encodeURIComponent(password)}@cluster0.djrmv.mongodb.net/activityDB?retryWrites=true&w=majority`;
+const pgConfig = {
+    host: process.env.PG_HOST,
+    user: process.env.PG_USER,
+    password: process.env.PG_PASSWORD,
+    database: process.env.PG_DB,
+    port: process.env.PG_PORT || 5432,
+};
 
 export const handler = async (event) => {
+    let mongoClient;
+    let pgPool;
     try {
-        // Ensure MongoDB connection string exists
-        if (!uri) {
-            throw new Error("MongoDB connection string is missing");
-        }
+        // MongoDB client for fetching user activities
+        mongoClient = new MongoClient(mongoUri);
+        await mongoClient.connect();
+        const database = mongoClient.db("activityDB");
+        const activityLogsCollection = database.collection('activity_logs');
 
-        let requestBody;
-        
-        try {
-            requestBody = JSON.parse(event.body);  // Extract the JSON from the event body
-        } catch (error) {
+        const { userId, productId } = JSON.parse(event.body);
+
+        // Fetch user activities from MongoDB
+        const userActivities = await activityLogsCollection.find({ user_id: userId }).toArray();
+        await mongoClient.close();
+
+        // Fetch additional data from PostgreSQL for collaborative filtering and content-based scoring
+        pgPool = new Pool(pgConfig);
+        const result = await pgPool.query('SELECT * FROM Products');
+        const products = result.rows;
+
+        // Collaborative filtering with SVD
+        const productViews = products.map((product) => ({
+            productId: product.product_id,
+            views: userActivities.filter(activity => activity.product_id === product.product_id).length,
+        }));
+        const viewMatrix = productViews.map((view) => [view.views]); // Matrix for SVD
+
+        // Apply SVD for collaborative filtering
+        const { u, v } = new SVD(viewMatrix);
+        const userVector = u.slice(0, 1); // Fetch user’s feature vector
+        const productScores = v.multiply(userVector).to1DArray(); // Score by collaborative filtering
+
+        // Content-based filtering using Cosine Similarity on category and description
+        const categoryScores = products.map((product) => {
+            const userActivityVector = userActivities.map(act => act.product_id);
+            const productVector = [product.category, product.description]; // Use relevant attributes as the feature vector
+
+            // Calculate cosine similarity
+            const similarity = cosineSimilarity(userActivityVector, productVector);
+            return { productId: product.product_id, score: similarity };
+        });
+
+        // Combine collaborative and content-based scores
+        const finalScores = products.map((product, index) => {
+            const collaborativeScore = productScores[index] || 0;
+            const contentScore = categoryScores.find(item => item.productId === product.product_id)?.score || 0;
+
+            const score = (collaborativeScore * 0.7) + (contentScore * 0.3); // Adjust weights as needed
+
             return {
-                statusCode: 400,
-                body: JSON.stringify({ message: 'Invalid request body' }),
+                ...product,
+                score,
+                collaborativeContribution: collaborativeScore * 0.7,
+                contentContribution: contentScore * 0.3,
             };
-        }
+        });
 
-        event = requestBody;
+        // Sort products by score and return the top recommendations
+        const recommendedProducts = finalScores
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5)
+            .map(product => ({ id: product.product_id, score: product.score, collaborativeContribution: product.collaborativeContribution, contentContribution: product.contentContribution }));
 
-
-        client = new MongoClient(uri);
-        await client.connect();
- 
-        const database = client.db("activityDB");
-        const activityLog = database.collection("activity_logs");
-
-        if (event.operation == 'log') {
-            // Validate required parameters for logging
-            if (!event.user_id || !event.product_id || !event.action) {
-                throw new Error('Missing parameters for logging activity');
-            }
-
-            const newLog = {
-                user_id: event.user_id,
-                product_id: event.product_id,
-                action: event.action,
-                timestamp: new Date()
-            };
-
-            await activityLog.insertOne(newLog);
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ message: 'Activity logged successfully' }),
-            };
-        } else if (event.operation == 'clear') {
-           
-
-            // Clear logs for a specific user
-            const result = await activityLog.deleteMany({ user_id: event.user_id });
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ message: 'User logs cleared successfully', deletedCount: result.deletedCount }),
-            };
-        } else {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: 'Invalid operation' })
-            };
-        }
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ recommendedProducts }),
+        };
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error generating recommendations:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Error processing request', error: error.message }),
+            body: JSON.stringify({ message: 'Error generating recommendations' }),
         };
     } finally {
-        // Close MongoDB connection
-        if (client) {
-            await client.close();
-        }
+        if (mongoClient) await mongoClient.close();
+        if (pgPool) await pgPool.end();
     }
 };
