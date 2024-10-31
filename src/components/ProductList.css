@@ -34,7 +34,7 @@
 }
 
 .product-icon, .recommendation-icon {
-    font-size: 32px;
+    font-size: 24px; /* Reduced icon size for better fit */
     margin-bottom: 6px;
     color: #007bff;
 }
@@ -55,24 +55,45 @@
 }
 
 .recommendation-items {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
+    display: grid; /* Changed back to grid */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjusted min size */
+    gap: 15px; /* Consistent gap */
     padding: 0;
 }
 
-.recommendation-controls button {
-    font-size: 0.8em;
-    padding: 6px 12px;
+.recommendation-item {
+    background-color: #f9f9f9; /* Light background for items */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px; /* Adjusted padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.2s; /* Smooth hover effect */
+    overflow: hidden; /* Prevent overflow issues */
 }
 
-h4 {
-    font-size: 1em;
-    margin: 4px 0;
+.recommendation-item:hover {
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.recommendation-name {
+    font-size: 1em; /* Adjusted name size */
+    font-weight: bold; /* Bold font for emphasis */
+    margin: 5px 0; /* Space above and below */
+}
+
+.recommendation-price {
+    color: #28a745; /* Green color for price */
+    font-size: 14px; /* Adjusted font size for price */
+    margin: 5px 0; /* Space above and below */
+}
+
+.recommendation-score {
+    font-size: 12px; /* Smaller font for score details */
+    color: #555; /* Darker gray for text */
 }
 
 .score, .recommendation-description, .recommendation-contribution {
-    font-size: 0.75em;
+    font-size: 0.75em; /* Maintain consistent smaller font for these elements */
     color: #666;
 }
 

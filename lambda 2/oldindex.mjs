@@ -1,9 +1,12 @@
 import { MongoClient } from 'mongodb';
-
 import pkg from 'pg';
 const { Pool } = pkg;
-import { SVD } from 'ml-matrix';
-import cosineSimilarity from 'compute-cosine-similarity'; // Importing the cosine similarity library
+import numeric from 'numeric';
+import natural from 'natural'; 
+
+// Access environment variables
+const username = process.env.MONGODB_USER;
+const password = process.env.MONGODB_PASSWORD;
 
 // MongoDB and PostgreSQL setup
 const mongoUri = `mongodb+srv://${username}:${encodeURIComponent(password)}@cluster0.djrmv.mongodb.net/activityDB?retryWrites=true&w=majority`;
@@ -15,9 +18,91 @@ const pgConfig = {
     port: process.env.PG_PORT || 5432,
 };
 
+// Stop words list for filtering
+const stopWords = new Set([ "and","for","with"
+    // (same stop words as before)
+]);
+
+const getRecommendations = async (normalizedProductScores, products, productInteractions) => {
+
+    const tfidf = new natural.TfIdf();
+
+    products.forEach(product => tfidf.addDocument(product.description));
+    const collectSimilarWords = (product) => {
+        const words = product.description.split(' ').map(word => word.toLowerCase());
+        const uniqueWords = [...new Set(words)];
+    
+        const filteredWords = uniqueWords
+        .filter(word => !stopWords.has(word)) // Keep 'sound' even if it's a stop word
+        .map(word => natural.PorterStemmer.stem(word)); // Stemming the words
+    
+        const similarProducts = products
+            .filter(compProduct => compProduct.product_id !== product.product_id)
+            .map(compProduct => {
+                const compWords = new Set(compProduct.description.split(' ').map(word => word.toLowerCase()));
+                const matchedWords = filteredWords.filter(stemmedWord => compWords.has(stemmedWord));
+    
+                const allMatchedWords = [...new Set([...matchedWords])]; // Combine matches
+    
+                // Add 'sound' to allMatchedWords if it was matched
+              
+                console.log(`Product: ${product.product_id}, Matched Words: ${allMatchedWords}`);
+                return allMatchedWords.length > 0 ? { product: compProduct, matchedWords: allMatchedWords } : null;
+            })
+            .filter(Boolean)
+            .sort((a, b) => b.matchedWords.length - a.matchedWords.length)
+            .slice(0, 10);
+    
+        return similarProducts;
+    };
+    
+
+    const finalScores = products.map((product, index) => {
+        const collaborativeScore = normalizedProductScores[index] || 0;
+        const similarProducts = collectSimilarWords(product);
+
+        // Calculate content contribution based on similar words
+        const matchedWordsCount = similarProducts.reduce((sum, sp) => sum + sp.matchedWords.length, 0); // Total matched words across similar products
+        const uniqueWordsCount = new Set(product.description.split(' ')).size; // Unique words in product description
+
+        const contentContribution = uniqueWordsCount > 0
+            ? (matchedWordsCount / uniqueWordsCount) * 100
+            : 0;
+
+        return {
+            ...product,
+            score: collaborativeScore * 0.7 + contentContribution * 0.3,
+            collaborativeContribution: collaborativeScore * 0.7,
+            contentContribution: contentContribution * 0.3,
+            uniqueUsers: productInteractions[index]?.uniqueUsers || 0,
+            interactions: productInteractions[index]?.totalInteractions || 0,
+            similarWords: [...new Set(similarProducts.flatMap(sp => sp.matchedWords))],
+        };
+    });
+
+    return finalScores
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(product => ({
+            id: product.product_id,
+            score: product.score,
+            collaborativeContribution: product.collaborativeContribution,
+            contentContribution: product.contentContribution,
+            uniqueUsers: product.uniqueUsers,
+            interactions: product.interactions,
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            category: product.category,
+            createdAt: product.createdAt,
+            similarWords: product.similarWords,
+        }));
+};
+
 export const handler = async (event) => {
     let mongoClient;
     let pgPool;
+
     try {
         // MongoDB client for fetching user activities
         mongoClient = new MongoClient(mongoUri);
@@ -25,64 +110,95 @@ export const handler = async (event) => {
         const database = mongoClient.db("activityDB");
         const activityLogsCollection = database.collection('activity_logs');
 
-        const { userId, productId } = JSON.parse(event.body);
+        const { userId } = JSON.parse(event.body);
 
-        // Fetch user activities from MongoDB
-        const userActivities = await activityLogsCollection.find({ user_id: userId }).toArray();
-        await mongoClient.close();
+        // Fetch all user activities from MongoDB
+        const allUserActivities = await activityLogsCollection.find({}).toArray();
 
-        // Fetch additional data from PostgreSQL for collaborative filtering and content-based scoring
+        // Fetch product data from PostgreSQL
         pgPool = new Pool(pgConfig);
-        const result = await pgPool.query('SELECT * FROM Products');
+        const result = await pgPool.query('SELECT * FROM "Products"');
         const products = result.rows;
 
-        // Collaborative filtering with SVD
-        const productViews = products.map((product) => ({
-            productId: product.product_id,
-            views: userActivities.filter(activity => activity.product_id === product.product_id).length,
-        }));
-        const viewMatrix = productViews.map((view) => [view.views]); // Matrix for SVD
+        console.log(`Number of products: ${products.length}`);
 
-        // Apply SVD for collaborative filtering
-        const { u, v } = new SVD(viewMatrix);
-        const userVector = u.slice(0, 1); // Fetch user’s feature vector
-        const productScores = v.multiply(userVector).to1DArray(); // Score by collaborative filtering
+        if (products.length === 0) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ recommendedProducts: [] }), // No recommendations
+            };
+        }
 
-        // Content-based filtering using Cosine Similarity on category and description
-        const categoryScores = products.map((product) => {
-            const userActivityVector = userActivities.map(act => act.product_id);
-            const productVector = [product.category, product.description]; // Use relevant attributes as the feature vector
-
-            // Calculate cosine similarity
-            const similarity = cosineSimilarity(userActivityVector, productVector);
-            return { productId: product.product_id, score: similarity };
+        const mostRecentActivity = allUserActivities.reduce((latest, activity) => {
+            return (new Date(activity.timestamp) > new Date(latest.timestamp)) ? activity : latest;
         });
 
-        // Combine collaborative and content-based scores
-        const finalScores = products.map((product, index) => {
-            const collaborativeScore = productScores[index] || 0;
-            const contentScore = categoryScores.find(item => item.productId === product.product_id)?.score || 0;
+        // Set isRecent for each activity
+        allUserActivities.forEach(activity => {
+            activity.isRecent = (new Date(activity.timestamp) >= new Date(mostRecentActivity.timestamp));
+        });
 
-            const score = (collaborativeScore * 0.7) + (contentScore * 0.3); // Adjust weights as needed
+        const interactionMatrix = products.map(product => {
+            const interactions = allUserActivities.filter(activity => activity.product_id === product.product_id);
+            const uniqueUsers = new Set(interactions.map(interaction => interaction.user_id)).size;
+
+            // Create a view score per user
+            const viewScores = allUserActivities
+                .filter(activity => activity.product_id === product.product_id)
+                .reduce((acc, activity) => {
+                    acc[activity.user_id] = acc[activity.user_id] || 0;
+                    acc[activity.user_id] += activity.isRecent ? 1.5 : 1; // Boost recent interactions
+                    return acc;
+                }, {});
+
+            const totalInteractions = interactions.length; // Count total interactions for the product
 
             return {
-                ...product,
-                score,
-                collaborativeContribution: collaborativeScore * 0.7,
-                contentContribution: contentScore * 0.3,
+                productId: product.product_id,
+                viewScores,
+                uniqueUsers,
+                totalInteractions, // Store total interactions
             };
         });
 
-        // Sort products by score and return the top recommendations
-        const recommendedProducts = finalScores
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 5)
-            .map(product => ({ id: product.product_id, score: product.score, collaborativeContribution: product.collaborativeContribution, contentContribution: product.contentContribution }));
+        const userSet = new Set(allUserActivities.map(activity => activity.user_id));
+        const uniqueUsersCount = userSet.size;
+
+        const interactionMatrixArray = Array.from(userSet).map(user => {
+            const userInteractions = allUserActivities.filter(activity => activity.user_id === user);
+            const scores = products.map(product => {
+                const productInteraction = userInteractions.find(activity => activity.product_id === product.product_id);
+                return productInteraction ? (productInteraction.isRecent ? 1.5 : 1) : 0; // Boost for recent views
+            });
+            return scores;
+        });
+
+        // Perform SVD
+        let productScores = [];
+        try {
+            const svd = numeric.svd(interactionMatrixArray);
+            const userIndex = Array.from(userSet).indexOf(userId);
+            const userVector = svd.U[userIndex] || Array(svd.V[0].length).fill(0);
+
+            productScores = numeric.dot(svd.V, userVector);
+        } catch (error) {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "Failed to generate recommendations due to SVD issue." }),
+            };
+        }
+
+        // Normalize collaborative scores
+        const maxScore = Math.max(...productScores);
+        const normalizedProductScores = productScores.map(score => (score / maxScore) || 0);
+
+        const recommendedProducts = await getRecommendations(normalizedProductScores, products, interactionMatrix);
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ recommendedProducts }),
+            body: JSON.stringify(recommendedProducts),
         };
+
     } catch (error) {
         console.error('Error generating recommendations:', error);
         return {

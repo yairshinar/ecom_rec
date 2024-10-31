@@ -44,7 +44,7 @@ app.get('/api/recommendations/:userId', async (req, res) => {
   try {
       const   userId   = req.params.userId;
       const recommendations = await recommendationService.getRecommendations(userId);
-      res.json(recommendations);
+      res.json(recommendations.data);
   } catch (err) {
       console.error('Error fetching recommendations:', err);
       res.status(500).json({ error: 'Internal Server Error' });
