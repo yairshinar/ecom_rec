@@ -7,25 +7,25 @@
 }
 
 .product-main {
-    display: flex;
-    margin-top: 10px;
+    display: flex; /* Use flexbox for horizontal alignment */
+    margin-top: 10px; /* Maintain top margin */
 }
 
 .product-items {
-    flex: 3;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
+    display: flex; /* Use flexbox for horizontal layout */
+    flex-wrap: wrap; /* Allow wrapping to the next line */
+    gap: 10px; /* Space between items */
 }
 
 .product-item, .recommendation-item {
+    flex: 0 1 calc(25% - 10px); /* Each item takes up to 25% of the container minus the gap */
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 8px;
+    padding: 6px; /* Keep padding small */
     cursor: pointer;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
-    font-size: 0.8em;
+    font-size: 0.8em; /* Keep the font size small */
 }
 
 .product-item:hover, .recommendation-item:hover {
@@ -34,20 +34,9 @@
 }
 
 .product-icon, .recommendation-icon {
-    font-size: 24px; /* Reduced icon size for better fit */
-    margin-bottom: 6px;
-    color: #007bff;
-}
-
-.product-detail-area {
-    width: 250px; /* Fixed width */
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    position: sticky; /* Sticky position to keep it fixed on scroll */
-    top: 10px;
-    margin-left: 10px;
+    font-size: 20px; /* Slightly smaller icon size */
+    margin-bottom: 4px; /* Reduced margin */
+    color: #007bff; /* Primary color */
 }
 
 .recommendations {
@@ -55,17 +44,17 @@
 }
 
 .recommendation-items {
-    display: grid; /* Changed back to grid */
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjusted min size */
-    gap: 15px; /* Consistent gap */
+    display: grid; /* Grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Adjusted min size */
+    gap: 10px; /* Consistent gap */
     padding: 0;
 }
 
 .recommendation-item {
     background-color: #f9f9f9; /* Light background for items */
     border: 1px solid #ddd; /* Light border */
-    border-radius: 8px; /* Rounded corners */
-    padding: 10px; /* Adjusted padding */
+    border-radius: 6px; /* Rounded corners */
+    padding: 8px; /* Adjusted padding */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     transition: transform 0.2s; /* Smooth hover effect */
     overflow: hidden; /* Prevent overflow issues */
@@ -76,29 +65,66 @@
 }
 
 .recommendation-name {
-    font-size: 1em; /* Adjusted name size */
+    font-size: 0.9em; /* Adjusted name size */
     font-weight: bold; /* Bold font for emphasis */
-    margin: 5px 0; /* Space above and below */
+    margin: 3px 0; /* Space above and below */
 }
 
 .recommendation-price {
     color: #28a745; /* Green color for price */
-    font-size: 14px; /* Adjusted font size for price */
-    margin: 5px 0; /* Space above and below */
+    font-size: 12px; /* Smaller font size for price */
+    margin: 3px 0; /* Space above and below */
 }
 
 .recommendation-score {
-    font-size: 12px; /* Smaller font for score details */
+    font-size: 11px; /* Smaller font for score details */
     color: #555; /* Darker gray for text */
 }
 
 .score, .recommendation-description, .recommendation-contribution {
-    font-size: 0.75em; /* Maintain consistent smaller font for these elements */
-    color: #666;
+    font-size: 0.7em; /* Maintain consistent smaller font for these elements */
+    color: #666; /* Lighter gray for description text */
 }
 
-button {
-    font-size: 0.8em;
-    padding: 6px 10px;
-    margin: 4px;
+.score-summary {
+    margin-left: 20px;
+    font-size: 0.9em; /* Summary font size */
+}
+
+.calculation-details {
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ddd; /* Light border */
+    padding: 15px; /* Padding for better spacing */
+    border-radius: 5px; /* Rounded corners */
+    max-width: 600px; /* Limit the width to avoid overflow */
+    margin-top: 10px; /* Space above */
+}
+
+.calculation-details h5 {
+    margin-bottom: 10px; /* Space below headings */
+    color: #333; /* Heading color */
+}
+
+.calc-row {
+    display: flex; /* Flexbox for horizontal layout */
+    justify-content: space-between; /* Space between items */
+}
+
+.calc-item {
+    flex: 1; /* Allow items to grow equally */
+    margin-right: 20px; /* Space between items */
+}
+
+.calc-item:last-child {
+    margin-right: 0; /* Remove margin on the last item */
+}
+
+.calc-item strong {
+    display: block; /* Strong titles on separate lines */
+    margin-bottom: 5px; /* Space below titles */
+}
+
+.calc-item p {
+    font-size: 0.85em; /* Slightly smaller text for readability */
+    color: #555; /* Darker gray for text */
 }

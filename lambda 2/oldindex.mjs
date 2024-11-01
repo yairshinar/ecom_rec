@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 import pkg from 'pg';
 const { Pool } = pkg;
 import numeric from 'numeric';
-import natural from 'natural'; 
+import natural from 'natural';
 
 // Access environment variables
 const username = process.env.MONGODB_USER;
@@ -19,7 +19,7 @@ const pgConfig = {
 };
 
 // Stop words list for filtering
-const stopWords = new Set([ "and","for","with"
+const stopWords = new Set(["and", "for", "with"
     // (same stop words as before)
 ]);
 
@@ -31,31 +31,31 @@ const getRecommendations = async (normalizedProductScores, products, productInte
     const collectSimilarWords = (product) => {
         const words = product.description.split(' ').map(word => word.toLowerCase());
         const uniqueWords = [...new Set(words)];
-    
+
         const filteredWords = uniqueWords
-        .filter(word => !stopWords.has(word)) // Keep 'sound' even if it's a stop word
-        .map(word => natural.PorterStemmer.stem(word)); // Stemming the words
-    
+            .filter(word => !stopWords.has(word)) // Keep 'sound' even if it's a stop word
+            .map(word => natural.PorterStemmer.stem(word)); // Stemming the words
+
         const similarProducts = products
             .filter(compProduct => compProduct.product_id !== product.product_id)
             .map(compProduct => {
                 const compWords = new Set(compProduct.description.split(' ').map(word => word.toLowerCase()));
                 const matchedWords = filteredWords.filter(stemmedWord => compWords.has(stemmedWord));
-    
+
                 const allMatchedWords = [...new Set([...matchedWords])]; // Combine matches
-    
+
                 // Add 'sound' to allMatchedWords if it was matched
-              
+
                 console.log(`Product: ${product.product_id}, Matched Words: ${allMatchedWords}`);
                 return allMatchedWords.length > 0 ? { product: compProduct, matchedWords: allMatchedWords } : null;
             })
             .filter(Boolean)
             .sort((a, b) => b.matchedWords.length - a.matchedWords.length)
             .slice(0, 10);
-    
+
         return similarProducts;
     };
-    
+
 
     const finalScores = products.map((product, index) => {
         const collaborativeScore = normalizedProductScores[index] || 0;
@@ -69,15 +69,34 @@ const getRecommendations = async (normalizedProductScores, products, productInte
             ? (matchedWordsCount / uniqueWordsCount) * 100
             : 0;
 
+
+
+
         return {
             ...product,
-            score: collaborativeScore * 0.7 + contentContribution * 0.3,
-            collaborativeContribution: collaborativeScore * 0.7,
-            contentContribution: contentContribution * 0.3,
+            score: 0,
+            collaborativeContribution: collaborativeScore,
+            contentContribution: contentContribution,
             uniqueUsers: productInteractions[index]?.uniqueUsers || 0,
             interactions: productInteractions[index]?.totalInteractions || 0,
             similarWords: [...new Set(similarProducts.flatMap(sp => sp.matchedWords))],
         };
+    });
+
+    // Calculate min and max for collaborative and content scores
+    const minCollab = Math.min(...finalScores.map(p => p.collaborativeContribution));
+    const maxCollab = Math.max(...finalScores.map(p => p.collaborativeContribution));
+
+    const minContent = Math.min(...finalScores.map(p => p.contentContribution));
+    const maxContent = Math.max(...finalScores.map(p => p.contentContribution));
+
+    // Apply min-max scaling to adjust each to a range of 0-100
+    finalScores.forEach(product => {
+        product.collaborativeContribution = ((product.collaborativeContribution - minCollab) / (maxCollab - minCollab)) * 100,
+            product.contentContribution = ((product.contentContribution - minContent) / (maxContent - minContent)) * 100,
+            product.score = (product.contentContribution * 0.7 + product.contentContribution * 0.3);
+
+
     });
 
     return finalScores
@@ -188,9 +207,15 @@ export const handler = async (event) => {
             };
         }
 
-        // Normalize collaborative scores
+        // Normalizing collaborative scores and factoring in unique user counts
         const maxScore = Math.max(...productScores);
-        const normalizedProductScores = productScores.map(score => (score / maxScore) || 0);
+        const normalizedProductScores = productScores.map((score, index) => {
+            const normalizedScore = (score / maxScore) || 0;
+
+            // Factor in unique users by creating a multiplier based on unique user count
+            const uniqueUserMultiplier = Math.log(interactionMatrix[index].uniqueUsers + 1) + 1; // Log scaling for diminishing returns
+            return normalizedScore * uniqueUserMultiplier; // Apply unique user weight
+        });
 
         const recommendedProducts = await getRecommendations(normalizedProductScores, products, interactionMatrix);
 
