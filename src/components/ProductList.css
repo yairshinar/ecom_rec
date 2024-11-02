@@ -128,3 +128,7 @@
     font-size: 0.85em; /* Slightly smaller text for readability */
     color: #555; /* Darker gray for text */
 }
+.raw-data {
+    font-style: italic;
+    color: #555;
+}

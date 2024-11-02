@@ -23,7 +23,7 @@ const stopWords = new Set(["and", "for", "with"
     // (same stop words as before)
 ]);
 
-const getRecommendations = async (normalizedProductScores, products, productInteractions) => {
+const getRecommendations = async (normalizedProductScores, products, productInteractions,recencyScores) => {
 
     const tfidf = new natural.TfIdf();
 
@@ -69,17 +69,25 @@ const getRecommendations = async (normalizedProductScores, products, productInte
             ? (matchedWordsCount / uniqueWordsCount) * 100
             : 0;
 
+        // Weighted score based on interactions, favoring more recent activity
+        const interactionWeight = productInteractions[index]?.totalInteractions || 0;
+        const uniqueUsers = productInteractions[index]?.uniqueUsers || 0;
+
+        // Adjust collaborative score based on interaction frequency
+        // This is where we apply a decay factor or adjustment based on interaction frequency
+        const adjustedCollaborativeScore = collaborativeScore * Math.log(interactionWeight + 1) * Math.log(uniqueUsers + 1);
 
 
 
         return {
             ...product,
             score: 0,
-            collaborativeContribution: collaborativeScore,
+            collaborativeContribution: adjustedCollaborativeScore,
             contentContribution: contentContribution,
-            uniqueUsers: productInteractions[index]?.uniqueUsers || 0,
-            interactions: productInteractions[index]?.totalInteractions || 0,
+            uniqueUsers: uniqueUsers,
+            interactions: interactionWeight,
             similarWords: [...new Set(similarProducts.flatMap(sp => sp.matchedWords))],
+            productRecencyScores: recencyScores[index]
         };
     });
 
@@ -89,12 +97,15 @@ const getRecommendations = async (normalizedProductScores, products, productInte
 
     const minContent = Math.min(...finalScores.map(p => p.contentContribution));
     const maxContent = Math.max(...finalScores.map(p => p.contentContribution));
+    const collabRange = maxCollab - minCollab || 1;
+    const contentRange = maxContent - minContent || 1;
+
 
     // Apply min-max scaling to adjust each to a range of 0-100
     finalScores.forEach(product => {
-        product.collaborativeContribution = ((product.collaborativeContribution - minCollab) / (maxCollab - minCollab)) * 100,
-            product.contentContribution = ((product.contentContribution - minContent) / (maxContent - minContent)) * 100,
-            product.score = (product.contentContribution * 0.7 + product.contentContribution * 0.3);
+        product.collaborativeContribution = ((product.collaborativeContribution - minCollab) / collabRange) * 100;
+        product.contentContribution = ((product.contentContribution - minContent) / contentRange) * 100;
+        product.score = (product.collaborativeContribution * 0.7) + (product.contentContribution * 0.3);
 
 
     });
@@ -115,6 +126,9 @@ const getRecommendations = async (normalizedProductScores, products, productInte
             category: product.category,
             createdAt: product.createdAt,
             similarWords: product.similarWords,
+            matchedWordsCount: product.similarWords.length,
+            uniqueWordsCount: new Set(product.description.split(' ')).size,
+            productRecencyScores: product.productRecencyScores
         }));
 };
 
@@ -148,15 +162,32 @@ export const handler = async (event) => {
             };
         }
 
-        const mostRecentActivity = allUserActivities.reduce((latest, activity) => {
-            return (new Date(activity.timestamp) > new Date(latest.timestamp)) ? activity : latest;
-        });
+        // Get the current date to calculate recency scores
+         
+        // Sort activities by timestamp (if not already sorted)
+        allUserActivities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-        // Set isRecent for each activity
-        allUserActivities.forEach(activity => {
-            activity.isRecent = (new Date(activity.timestamp) >= new Date(mostRecentActivity.timestamp));
-        });
+        // Total interactions
+        const totalInteractions = allUserActivities.length;
 
+        // Set scores based on order of interactions
+        allUserActivities.forEach((activity, index) => {
+            // Higher scores for more recent interactions
+            activity.recencyScore = 1.0 - (index / totalInteractions); // Normalize score based on position
+        });
+        
+       
+  
+            const productRecencyScores = products.map(product => {
+            // Filter activities for the current product
+            const productActivities = allUserActivities.filter(activity => activity.product_id === product.product_id);
+            
+            // Extract the recency scores
+            const scores = productActivities.map(activity => activity.recencyScore).slice(0, 5); // Limit to max of 5 recency scores
+        
+            // Return scores or a default value
+            return scores.length > 0 ? scores : [0];
+        });
         const interactionMatrix = products.map(product => {
             const interactions = allUserActivities.filter(activity => activity.product_id === product.product_id);
             const uniqueUsers = new Set(interactions.map(interaction => interaction.user_id)).size;
@@ -166,7 +197,7 @@ export const handler = async (event) => {
                 .filter(activity => activity.product_id === product.product_id)
                 .reduce((acc, activity) => {
                     acc[activity.user_id] = acc[activity.user_id] || 0;
-                    acc[activity.user_id] += activity.isRecent ? 1.5 : 1; // Boost recent interactions
+                    acc[activity.user_id] += activity.recencyScore; // Boost recent interactions
                     return acc;
                 }, {});
 
@@ -217,7 +248,7 @@ export const handler = async (event) => {
             return normalizedScore * uniqueUserMultiplier; // Apply unique user weight
         });
 
-        const recommendedProducts = await getRecommendations(normalizedProductScores, products, interactionMatrix);
+        const recommendedProducts = await getRecommendations(normalizedProductScores, products, interactionMatrix,productRecencyScores);
 
         return {
             statusCode: 200,

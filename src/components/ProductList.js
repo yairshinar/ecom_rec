@@ -118,28 +118,48 @@ const ProductList = () => {
                     </button>
                     <button onClick={handleClearUserLogs}>Clear User Data</button>
                 </div>
-                <div class="calculation-details">
+                <div className="calculation-details">
                     <h5>Calculation Details</h5>
-                    <div class="calc-row">
-                        <div class="calc-item">
+                    <div className="calc-row">
+                        <div className="calc-item">
                             <strong>Collaborative Contribution</strong>
-                            <p><em>How:</em> Uses Singular Value Decomposition (SVD) on the interaction matrix to calculate a score from 0-100. This score reflects product popularity by identifying user preference patterns and normalizing scores across diverse users.</p>
-                            <p><em>Why:</em> Highlights products appealing to a broad user base, ensuring that recommendations resonate with new and returning customers.</p>
+                            <p>
+                                <em>How:</em> Collaborative scores are generated using Singular Value Decomposition (SVD) on the user-product interaction matrix. This technique helps to uncover latent factors that explain the observed ratings and interactions among users and products.
+                                The interaction scores are weighted based on user activity, with a particular focus on the sequence of interactions:
+                                <ul>
+                                    <li>The most recent interactions receive a higher recency score, which is determined by their order in the interaction list. This means that recent interactions have a more significant influence on the final score while still allowing older interactions to contribute to the overall score.</li>
+                                    <li>Unique users for each product are calculated to prevent overestimating popularity based on repeated interactions.</li>
+                                </ul>
+                                The formula applied is:
+                                <br />
+                                <code>30% Adjusted Collaborative Score = Collaborative Score * log(Unique Users + 1) * (0.3)</code>
+                            </p>
                         </div>
-                        <div class="calc-item">
+                        <div className="calc-item">
                             <strong>Content Contribution</strong>
-                            <p><em>How:</em> Applies TF-IDF (Term Frequency-Inverse Document Frequency) to evaluate keyword relevance in product descriptions. By comparing the frequency of significant terms against a corpus of popular items, we calculate a content score (0-100) that emphasizes descriptions with high matching terms relative to total unique words.</p>
-                            <p><em>Why:</em> Enhances discoverability by recommending products with relevant features reflected in descriptions, aiding users in finding similar items quickly.</p>
+                            <p>
+                                <em>How:</em> Content scores are derived from the term frequency-inverse document frequency (TF-IDF) of product descriptions. The scoring includes:
+                                <ul>
+                                    <li>Matched words from similar products are counted to determine the content relevance.</li>
+                                    <li>Recency is integrated by giving more weight to products with recent user interactions, where the weight is calculated based on the order of interactions to ensure that the score reflects the importance of each interaction in context.</li>
+                                </ul>
+                                The calculation is as follows:
+                                <br />
+                                <code>70% Content Contribution = (Matched Words Count / Unique Words Count) * 100 * (0.7)</code>
+                            </p>
                         </div>
                     </div>
                 </div>
 
 
+
+
+
                 <div className="recommendation-items">
                     {recommendations.length > 0 ? (
                         recommendations.map(rec => {
-                            const collaborativeScore = rec.collaborativeContribution * 100 || 0;
-                            const contentScore = rec.contentContribution * 100 || 0;
+                            const collaborativeScore = rec.collaborativeContribution || 0;
+                            const contentScore = rec.contentContribution || 0;
                             const finalScore = rec.score;
                             const uniqueUsers = rec.uniqueUsers || 0; // Unique user count
                             const interactions = rec.interactions || 0; // Total interactions
@@ -152,20 +172,28 @@ const ProductList = () => {
                                 >
                                     <FontAwesomeIcon icon={getCategoryIcon(rec.category)} className="recommendation-icon" />
                                     <h4>{highlightSimilarWords(rec.name, rec.similarWords)}</h4>
-                                    <p>${(Number(rec.price) || 0).toFixed(2)}</p>
+                                    <p>${(Number(rec.price) || 0).toFixed(0)}</p>
                                     <p className="score">
-                                        Score: <span>{finalScore.toFixed(2)}</span>
+                                        <strong> Score:</strong> <span>{finalScore.toFixed(1)}</span>
                                         <br />
-                                        (<span>{(collaborativeScore).toFixed(0)}% from User Views Collaboration</span> +
-                                        <span>{(contentScore).toFixed(0)}% from Description Similarity</span>)
+                                        <strong>Details:</strong>
                                         <br />
-                                        <span>Unique Users: {uniqueUsers}</span> |
-                                        <span>Total Interactions: {interactions}</span> {/* Updated label */}
+                                        <span>Collaborative: {collaborativeScore.toFixed(0)}%
+                                            <span className="raw-data"> (Unique Users: {uniqueUsers}, Total Interactions: {interactions})</span>
+                                        </span>
                                         <br />
-                                        {/* Display similar words if available */}
-                                        {rec.similarWords && rec.similarWords.length > 0 && (
-                                            <span>Similar Words: {rec.similarWords.join(', ')}</span>
-                                        )}
+                                        <span>Content Similarity: {contentScore.toFixed(0)}%
+                                            {rec.similarWords && rec.similarWords.length > 0 && (
+                                                <span className="raw-data"> (Similar Words: {rec.similarWords.join(', ')})</span>
+                                            )}
+                                        </span>
+                                        <br />
+                                        <span>Matched Words Count: {rec.matchedWordsCount}</span>
+                                        <br />
+                                        <span>Unique Words Count: {rec.uniqueWordsCount}</span>
+                                        <br/>
+                                        <strong>Recency Scores:</strong> <span>{Array.from(new Set(rec.productRecencyScores)).slice(0, 5).join(', ')}</span>
+
                                     </p>
                                 </div>
                             );
