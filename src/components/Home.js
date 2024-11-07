@@ -5,8 +5,8 @@ import umlDiagram from '../assets/images/ai-commerce-uml.jpg';
 import architectureDesign from '../assets/images/ai-commerce-architecture.jpg';
 import erdImage from '../assets/images/ai-commerce-erd.svg';
 import githubIcon from '../assets/icons/github.svg';
-import page00001 from '../assets/images/page00001.jpg';
-import page00002 from '../assets/images/page00002.jpg';
+import page00001 from '../assets/images/page0001.jpg';
+import page00002 from '../assets/images/page0002.jpg';
 
 const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
