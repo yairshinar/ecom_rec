@@ -5,6 +5,8 @@ import umlDiagram from '../assets/images/ai-commerce-uml.jpg';
 import architectureDesign from '../assets/images/ai-commerce-architecture.jpg';
 import erdImage from '../assets/images/ai-commerce-erd.svg';
 import githubIcon from '../assets/icons/github.svg';
+import page00001 from '../assets/images/page00001.jpg';
+import page00002 from '../assets/images/page00002.jpg';
 
 const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -44,6 +46,14 @@ const Home = () => {
             <div className="thumbnail" onClick={() => openModal(erdImage)}>
               <img src={erdImage} alt="ERD" />
               <div className="image-title">ERD</div>
+            </div>
+            <div className="thumbnail" onClick={() => openModal(page00001)}>
+              <img src={page00001} alt="Recommendation Algorithm Explanation 1" />
+              <div className="image-title">Algorithm Explanation 1</div>
+            </div>
+            <div className="thumbnail" onClick={() => openModal(page00002)}>
+              <img src={page00002} alt="Recommendation Algorithm Explanation 2" />
+              <div className="image-title">Algorithm Explanation 2</div>
             </div>
           </div>
           <div className="project-links">
