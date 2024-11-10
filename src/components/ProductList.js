@@ -9,6 +9,7 @@ import icons from '../utils/icons';
 const getCategoryIcon = (category) => {
     return icons[category] || icons['Electronics'];
 };
+
 const highlightSimilarWords = (text, similarWords) => {
     if (!similarWords || similarWords.length === 0) return text;
 
@@ -21,8 +22,6 @@ const highlightSimilarWords = (text, similarWords) => {
 };
 
 const ProductList = () => {
-
-
     const userId = localStorage.getItem('userId');
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [products, setProducts] = useState([]);
@@ -49,7 +48,6 @@ const ProductList = () => {
         setLoadingRecommendations(true);
         try {
             const response = await fetchRecommendations(userId);
-            console.log(response.data)
             if (response && Array.isArray(response.data)) {
                 const enrichedRecommendations = response.data.map(rec => {
                     const product = products.find(p => p.product_id === rec.id);
@@ -104,21 +102,73 @@ const ProductList = () => {
                 </div>
 
                 <div className="product-detail-area">
-                    {selectedProduct && (
-                        <ProductDetail product={selectedProduct} />
-                    )}
+                    {/* Title for Product Details */}
+                    <h3>Product Details</h3>
+
+                    {/* Always render the ProductDetail component */}
+                    <ProductDetail product={selectedProduct || {}} />  
+
+                    {/* Recommendations Section placed directly under product details */}
+                    <section className="recommendations">
+                        <h3>Personalized Recommendations</h3>
+                        <div className="recommendation-controls">
+                            <button onClick={getRecommendations} disabled={loadingRecommendations}>
+                                Get Latest Recommendations
+                            </button>
+                            <button onClick={handleClearUserLogs}>Clear User Data</button>
+                        </div>
+
+                        <div className="recommendation-items">
+                            {recommendations.length > 0 ? (
+                                recommendations.map(rec => {
+                                    const collaborativeScore = rec.collaborativeContribution || 0;
+                                    const contentScore = rec.contentContribution || 0;
+                                    const finalScore = rec.score;
+                                    const uniqueUsers = rec.uniqueUsers || 0; // Unique user count
+                                    const interactions = rec.interactions || 0; // Total interactions
+
+                                    return (
+                                        <div
+                                            key={rec.id}
+                                            className="recommendation-item"
+                                            onClick={() => handleProductClick(rec, true)}
+                                        >
+                                            <FontAwesomeIcon icon={getCategoryIcon(rec.category)} className="recommendation-icon" />
+                                            <h4>{highlightSimilarWords(rec.name, rec.similarWords)}</h4>
+                                            <p>${(Number(rec.price) || 0).toFixed(0)}</p>
+                                            <p className="score">
+                                                <strong> Score:</strong> <span>{finalScore.toFixed(1)}</span>
+                                                <br />
+                                                <strong>Details:</strong>
+                                                <br />
+                                                <span>Collaborative: {collaborativeScore.toFixed(0)}%
+                                                    <span className="raw-data"> (Unique Users: {uniqueUsers}, Total Interactions: {interactions})</span>
+                                                </span>
+                                                <br />
+                                                <span>Content Similarity: {contentScore.toFixed(0)}%
+                                                    {rec.similarWords && rec.similarWords.length > 0 && (
+                                                        <span className="raw-data"> (Similar Words: {rec.similarWords.join(', ')})</span>
+                                                    )}
+                                                </span>
+                                                <br />
+                                                <span>Matched Words Count: {rec.matchedWordsCount}</span>
+                                                <br />
+                                                <span>Unique Words Count: {rec.uniqueWordsCount}</span>
+                                                <br/>
+                                                <strong>Recency Scores:</strong> <span>{Array.from(new Set(rec.productRecencyScores)).slice(0, 5).join(', ')}</span>
+                                            </p>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <p>No recommendations available.</p>
+                            )}
+                        </div>
+                    </section>
                 </div>
             </section>
 
-            <section className="recommendations">
-                <h3>Personalized Recommendations</h3>
-                <div className="recommendation-controls">
-                    <button onClick={getRecommendations} disabled={loadingRecommendations}>
-                        Get Latest Recommendations
-                    </button>
-                    <button onClick={handleClearUserLogs}>Clear User Data</button>
-                </div>
-                <div className="calculation-details">
+            <div className="calculation-details">
                     <h5>Calculation Details</h5>
                     <div className="calc-row">
                         <div className="calc-item">
@@ -155,61 +205,7 @@ const ProductList = () => {
 
 
 
-                <div className="recommendation-items">
-                    {recommendations.length > 0 ? (
-                        recommendations.map(rec => {
-                            const collaborativeScore = rec.collaborativeContribution || 0;
-                            const contentScore = rec.contentContribution || 0;
-                            const finalScore = rec.score;
-                            const uniqueUsers = rec.uniqueUsers || 0; // Unique user count
-                            const interactions = rec.interactions || 0; // Total interactions
-
-                            return (
-                                <div
-                                    key={rec.id}
-                                    className="recommendation-item"
-                                    onClick={() => handleProductClick(rec, true)}
-                                >
-                                    <FontAwesomeIcon icon={getCategoryIcon(rec.category)} className="recommendation-icon" />
-                                    <h4>{highlightSimilarWords(rec.name, rec.similarWords)}</h4>
-                                    <p>${(Number(rec.price) || 0).toFixed(0)}</p>
-                                    <p className="score">
-                                        <strong> Score:</strong> <span>{finalScore.toFixed(1)}</span>
-                                        <br />
-                                        <strong>Details:</strong>
-                                        <br />
-                                        <span>Collaborative: {collaborativeScore.toFixed(0)}%
-                                            <span className="raw-data"> (Unique Users: {uniqueUsers}, Total Interactions: {interactions})</span>
-                                        </span>
-                                        <br />
-                                        <span>Content Similarity: {contentScore.toFixed(0)}%
-                                            {rec.similarWords && rec.similarWords.length > 0 && (
-                                                <span className="raw-data"> (Similar Words: {rec.similarWords.join(', ')})</span>
-                                            )}
-                                        </span>
-                                        <br />
-                                        <span>Matched Words Count: {rec.matchedWordsCount}</span>
-                                        <br />
-                                        <span>Unique Words Count: {rec.uniqueWordsCount}</span>
-                                        <br/>
-                                        <strong>Recency Scores:</strong> <span>{Array.from(new Set(rec.productRecencyScores)).slice(0, 5).join(', ')}</span>
-
-                                    </p>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <p>No recommendations available.</p>
-                    )}
-                </div>
-
-
-            </section >
-
-            <footer>
-                <Link to="/">Back to Homepage</Link>
-            </footer>
-        </div >
+        </div>
     );
 };
 
