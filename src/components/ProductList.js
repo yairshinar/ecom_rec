@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { fetchProducts, logUserAction, fetchRecommendations, clearUserLogs } from '../services/api';
 import ProductDetail from './ProductDetail';
 import './ProductList.css';
@@ -28,6 +27,8 @@ const ProductList = () => {
     const [recommendations, setRecommendations] = useState([]);
     const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
+    const [interactions, setInteractions] = useState({});
+
     useEffect(() => {
         const loadProducts = async () => {
             try {
@@ -45,6 +46,9 @@ const ProductList = () => {
     }, [userId]);
 
     const getRecommendations = async () => {
+        // Reset interactions when recommendations are fetched
+        resetInteractions();
+
         setLoadingRecommendations(true);
         try {
             const response = await fetchRecommendations(userId);
@@ -72,6 +76,18 @@ const ProductList = () => {
             logUserAction(userId, product.product_id, actionType);
         }
         setSelectedProduct(product);
+
+        // Increment interaction count with animation
+        const productId = product.product_id || product.id;
+        setInteractions(prevState => ({
+            ...prevState,
+            [productId]: (prevState[productId] || 0) + 1
+        }));
+    };
+
+    // Function to reset the interactions
+    const resetInteractions = () => {
+        setInteractions({});
     };
 
     const handleClearUserLogs = async () => {
@@ -87,124 +103,93 @@ const ProductList = () => {
             </header>
 
             <section className="product-main">
-                <div className="product-items">
-                    {products.map(product => (
-                        <div
-                            key={product.product_id}
-                            className="product-item"
-                            onClick={() => handleProductClick(product)}
-                        >
-                            <FontAwesomeIcon icon={getCategoryIcon(product.category)} className="product-icon" />
-                            <h4>{product.name}</h4>
-                            <p>${(Number(product.price) || 0).toFixed(0)}</p>
-                        </div>
-                    ))}
+                {/* Product Detail Section */}
+                <div className="product-detail-container">
+                    <h3>Product Details</h3>
+                    <ProductDetail product={selectedProduct || {}} />
                 </div>
 
-                <div className="product-detail-area">
-                    {/* Title for Product Details */}
-                    <h3>Product Details</h3>
-
-                    {/* Always render the ProductDetail component */}
-                    <ProductDetail product={selectedProduct || {}} />  
-
-                    {/* Recommendations Section placed directly under product details */}
-                    <section className="recommendations">
-                        <h3>Personalized Recommendations</h3>
-                        <div className="recommendation-controls">
-                            <button onClick={getRecommendations} disabled={loadingRecommendations}>
-                                Get Latest Recommendations
-                            </button>
-                            <button onClick={handleClearUserLogs}>Clear User Data</button>
-                        </div>
-
-                        <div className="recommendation-items">
-                            {recommendations.length > 0 ? (
-                                recommendations.map(rec => {
-                                    const collaborativeScore = rec.collaborativeContribution || 0;
-                                    const contentScore = rec.contentContribution || 0;
-                                    const finalScore = rec.score;
-                                    const uniqueUsers = rec.uniqueUsers || 0; // Unique user count
-                                    const interactions = rec.interactions || 0; // Total interactions
-
-                                    return (
-                                        <div
-                                            key={rec.id}
-                                            className="recommendation-item"
-                                            onClick={() => handleProductClick(rec, true)}
-                                        >
-                                            <FontAwesomeIcon icon={getCategoryIcon(rec.category)} className="recommendation-icon" />
-                                            <h4>{highlightSimilarWords(rec.name, rec.similarWords)}</h4>
-                                            <p>${(Number(rec.price) || 0).toFixed(0)}</p>
-                                            <p className="score">
-                                                <strong> Score:</strong> <span>{finalScore.toFixed(1)}</span>
-                                                <br />
-                                                <strong>Details:</strong>
-                                                <br />
-                                                <span>Collaborative: {collaborativeScore.toFixed(0)}%
-                                                    <span className="raw-data"> (Unique Users: {uniqueUsers}, Total Interactions: {interactions})</span>
-                                                </span>
-                                                <br />
-                                                <span>Content Similarity: {contentScore.toFixed(0)}%
-                                                    {rec.similarWords && rec.similarWords.length > 0 && (
-                                                        <span className="raw-data"> (Similar Words: {rec.similarWords.join(', ')})</span>
-                                                    )}
-                                                </span>
-                                                <br />
-                                                <span>Matched Words Count: {rec.matchedWordsCount}</span>
-                                                <br />
-                                                <span>Unique Words Count: {rec.uniqueWordsCount}</span>
-                                                <br/>
-                                                <strong>Recency Scores:</strong> <span>{Array.from(new Set(rec.productRecencyScores)).slice(0, 5).join(', ')}</span>
-                                            </p>
-                                        </div>
-                                    );
-                                })
-                            ) : (
-                                <p>No recommendations available.</p>
-                            )}
-                        </div>
-                    </section>
+                {/* Product List Section */}
+                <div className="products-container">
+                    <h3>Products</h3>
+                    <div className="product-items">
+                        {products.map(product => (
+                            <div
+                                key={product.product_id}
+                                className="product-item"
+                                onClick={() => handleProductClick(product)}
+                            >
+                                <FontAwesomeIcon icon={getCategoryIcon(product.category)} className="product-icon" />
+                                <h4>{product.name}</h4>
+                                <p>${(Number(product.price) || 0).toFixed(0)}</p>
+                                <p className="interaction-count">
+                                    Interactions: {interactions[product.product_id] || 0}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
-            <div className="calculation-details">
-                    <h5>Calculation Details</h5>
-                    <div className="calc-row">
-                        <div className="calc-item">
-                            <strong>Collaborative Contribution</strong>
-                            <p>
-                                <em>How:</em> Collaborative scores are generated using Singular Value Decomposition (SVD) on the user-product interaction matrix. This technique helps to uncover latent factors that explain the observed ratings and interactions among users and products.
-                                The interaction scores are weighted based on user activity, with a particular focus on the sequence of interactions:
-                                <ul>
-                                    <li>The most recent interactions receive a higher recency score, which is determined by their order in the interaction list. This means that recent interactions have a more significant influence on the final score while still allowing older interactions to contribute to the overall score.</li>
-                                    <li>Unique users for each product are calculated to prevent overestimating popularity based on repeated interactions.</li>
-                                </ul>
-                                The formula applied is:
-                                <br />
-                                <code>30% Adjusted Collaborative Score = Collaborative Score * log(Unique Users + 1) * (0.3)</code>
-                            </p>
-                        </div>
-                        <div className="calc-item">
-                            <strong>Content Contribution</strong>
-                            <p>
-                                <em>How:</em> Content scores are derived from the term frequency-inverse document frequency (TF-IDF) of product descriptions. The scoring includes:
-                                <ul>
-                                    <li>Matched words from similar products are counted to determine the content relevance.</li>
-                                    <li>Recency is integrated by giving more weight to products with recent user interactions, where the weight is calculated based on the order of interactions to ensure that the score reflects the importance of each interaction in context.</li>
-                                </ul>
-                                The calculation is as follows:
-                                <br />
-                                <code>70% Content Contribution = (Matched Words Count / Unique Words Count) * 100 * (0.7)</code>
-                            </p>
-                        </div>
-                    </div>
+            {/* Recommendations Section */}
+            <section className="recommendations-container">
+                <h3>Personalized Recommendations</h3>
+                <div className="recommendation-controls">
+                    <button onClick={getRecommendations} disabled={loadingRecommendations}>
+                        Get Latest Recommendations
+                    </button>
+                    <button onClick={handleClearUserLogs}>Clear User Data</button>
                 </div>
 
+                <div className="recommendation-items">
+                    {recommendations.length > 0 ? (
+                        recommendations.map(rec => {
+                            const collaborativeScore = rec.collaborativeContribution || 0;
+                            const contentScore = rec.contentContribution || 0;
+                            const finalScore = rec.score;
+                            const uniqueUsers = rec.uniqueUsers || 0;
+                            const interactions = rec.interactions || 0;
 
-
-
-
+                            return (
+                                <div
+                                    key={rec.id}
+                                    className="recommendation-item"
+                                    onClick={() => handleProductClick(rec, true)}
+                                >
+                                    <FontAwesomeIcon icon={getCategoryIcon(rec.category)} className="recommendation-icon" />
+                                    <h4>{highlightSimilarWords(rec.name, rec.similarWords)}</h4>
+                                    <p>${(Number(rec.price) || 0).toFixed(0)}</p>
+                                    <p className="score">
+                                        <strong> Score:</strong> <span>{finalScore.toFixed(1)}</span>
+                                        <br />
+                                        <strong>Details:</strong>
+                                        <br />
+                                        <span className="collaborative">
+                                            Collaborative: {collaborativeScore.toFixed(0)}%
+                                            <span className="raw-data"> (Unique Users: {uniqueUsers}, Total Interactions: {interactions})</span>
+                                        </span>
+                                        <br />
+                                        <span className="content-similarity">
+                                            Content Similarity: {contentScore.toFixed(0)}%
+                                            {rec.similarWords && rec.similarWords.length > 0 && (
+                                                <span className="raw-data"> (Similar Words: {rec.similarWords.join(', ')})</span>
+                                            )}
+                                        </span>
+                                        <br />
+                                        <span>Matched Words Count: {rec.matchedWordsCount}</span>
+                                        <br />
+                                        <span>Unique Words Count: {rec.uniqueWordsCount}</span>
+                                        <br />
+                                        <strong>Recency Scores:</strong> <span>{Array.from(new Set(rec.productRecencyScores)).slice(0, 5).join(', ')}</span>
+                                    </p>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <p>No recommendations available.</p>
+                    )}
+                </div>
+            </section>
         </div>
     );
 };
