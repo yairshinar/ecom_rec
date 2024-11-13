@@ -4,6 +4,7 @@ import ProductDetail from './ProductDetail';
 import './ProductList.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import icons from '../utils/icons';
+import { Link } from 'react-router-dom';
 
 const getCategoryIcon = (category) => {
     return icons[category] || icons['Electronics'];
@@ -97,9 +98,14 @@ const ProductList = () => {
 
     return (
         <div className="product-recommendation-container">
+            <span className="return-button-container">
+                <Link to="/" className="return-button">
+                    <button>Return to All Projects</button>
+                </Link>
+            </span>
             <header>
                 <h2>Product Store</h2>
-                <p>Browse products and get tailored recommendations based on your interests.</p>
+                <p>Browse products and press Get Recommendations to get tailored recommendations based on your Clicks Count, Recency and Similar Products</p>
             </header>
 
             <section className="product-main">
@@ -190,6 +196,7 @@ const ProductList = () => {
                     )}
                 </div>
             </section>
+            
         </div>
     );
 };

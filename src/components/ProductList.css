@@ -141,3 +141,27 @@ button:disabled {
         width: 100%;
     }
 }
+.return-button-container {
+    margin-top: 0px;
+    text-align: left;
+}
+
+.return-button button {
+    padding: 12px 20px;
+    font-size: 12px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.return-button button:hover {
+    background-color: #0056b3;
+}
+
+.return-button button:focus {
+    outline: none;
+}
+
