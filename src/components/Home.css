@@ -1,29 +1,25 @@
-/* General Styles */
 .home-container {
   padding: 20px;
 }
 
-/* Hero Section */
 .hero {
   text-align: center;
   margin-bottom: 40px;
 }
 
-/* Projects Container */
 .projects {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
 }
 
-/* Project Card */
 .project-card {
   background-color: #fafafa;
   border: 1px solid #dee2e6;
   border-radius: 15px;
   padding: 20px;
-  margin: 10px;
-  width: calc(100% - 20px); /* Default full-width */
+  margin: 5px;
+  width: calc(50% - 10px); /* Adjust width for mobile */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
 }
@@ -32,25 +28,21 @@
   transform: translateY(-2px);
 }
 
-/* Image Gallery */
 .image-gallery {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
+  justify-content: space-between;
   margin: 10px 0;
 }
 
-/* Thumbnail Style */
 .thumbnail {
+  text-align: center;
   cursor: pointer;
-  flex: 1 1 calc(33.333% - 10px); /* Responsive thumbnail sizing */
-  max-width: 120px;
+  margin: 0 5px;
+  flex: 1;
 }
 
 .thumbnail img {
   width: 100%;
-  height: auto;
   border-radius: 10px;
   border: 2px solid #ccc;
   transition: transform 0.2s;
@@ -60,15 +52,13 @@
   transform: scale(1.05);
 }
 
-/* Button Styles */
 .project-links {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: space-between;
   margin-top: 10px;
 }
 
-.btn-project, .btn-go {
+.btn-project {
   background-color: #28a745;
   color: #fff;
   padding: 10px 20px;
@@ -76,17 +66,28 @@
   border-radius: 12px;
   text-decoration: none;
   font-weight: bold;
-  margin: 5px 0;
   transition: background-color 0.3s, transform 0.3s;
-  width: 100%; /* Full width on smaller screens */
 }
 
-.btn-project:hover, .btn-go:hover {
+.btn-project:hover {
   background-color: #0056b3;
   transform: scale(1.05);
 }
 
-/* Modal */
+.btn-link {
+  display: flex;
+  align-items: center;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
 .modal {
   position: fixed;
   z-index: 1000;
@@ -102,41 +103,46 @@
 
 .modal-content {
   position: relative;
+  width: 50%; /* Set the modal width to 50% */
+  max-width: 90%; /* Ensure image doesn't overflow */
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  overflow: hidden; /* Ensure no image overflow */
 }
 
 .modal-content img {
-  max-width: 90vw; /* Set max-width to fit within the viewport */
-  max-height: 90vh; /* Set max-height to fit within the viewport */
+  width: 100%;
+  height: auto;
+  max-height: 80vh; /* Ensure image fits within the viewport */
+  object-fit: contain;
 }
 
 .close {
   position: absolute;
   top: 10px;
-  right: 20px;
+  right: 10px;
   font-size: 30px;
-  color: white;
+  color: #007bff; /* Blue close button */
   cursor: pointer;
 }
 
-/* Footer */
 footer {
   text-align: center;
   margin-top: 30px;
 }
 
-/* Responsive Styles */
-@media (min-width: 768px) {
+/* Mobile Styles */
+@media (max-width: 768px) {
   .project-card {
-    width: calc(48% - 20px); /* Two cards per row on tablets */
+    width: calc(100% - 10px); /* Stack project cards on small screens */
   }
 
-  .btn-project, .btn-go {
-    width: auto; /* Reset width on larger screens */
+  .modal-content {
+    width: 80%; /* Adjust modal width for mobile */
   }
-}
 
-@media (min-width: 1024px) {
-  .project-card {
-    width: calc(22% - 20px); /* Four cards per row on desktop */
+  .close {
+    font-size: 24px; /* Adjust close button size on small screens */
   }
 }
