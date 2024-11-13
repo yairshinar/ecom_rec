@@ -24,10 +24,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <header className="hero">
-        <h1>Explore My Projects</h1>
-        <p>Discover innovative solutions and insights.</p>
-      </header>
+      
 
       <section className="projects">
         {/* Project Cards */}
