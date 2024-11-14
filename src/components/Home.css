@@ -46,7 +46,8 @@
 
 .thumbnail img {
   width: 100%;
-  max-width: 100%;
+  max-width: 150px; /* Limit the maximum width for thumbnails */
+  height: auto;
   border-radius: 10px;
   border: 2px solid #ccc;
   transition: transform 0.2s;
@@ -117,9 +118,10 @@
 }
 
 .modal-content img {
-  width: 100%;
+  width: auto;
   height: auto;
-  max-height: 80vh; /* Ensure image fits within the viewport */
+  max-width: 80vw; /* Limit image size to 80% of viewport width */
+  max-height: 80vh; /* Limit image size to 80% of viewport height */
   object-fit: contain;
 }
 
@@ -145,7 +147,8 @@ footer {
   }
 
   .modal-content {
-    width: 80%; /* Adjust modal width for mobile */
+    padding: 15px;
+    width: 90%; /* Adjust modal width for mobile */
   }
 
   .close {
@@ -170,32 +173,24 @@ footer {
   }
 }
 
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  overflow: hidden; /* Prevents scrolling if modal is larger */
+/* Desktop Styles */
+@media (min-width: 1024px) {
+  .thumbnail img {
+    max-width: 200px; /* Limit thumbnail size on larger screens */
+  }
+
+  .modal-content img {
+    max-width: 80vw;
+    max-height: 80vh;
+  }
+
+  .download-btn {
+    max-width: 150px; /* Limit the width of download button */
+    text-align: center;
+  }
 }
 
-.modal-content {
-  max-width: 90vw;
-  max-height: 90vh;
-  width: auto;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  background-color: transparent;
-}
-
+/* Modal Zoomed Image Styles */
 .zoomed-image {
   width: 100%;
   height: auto;
