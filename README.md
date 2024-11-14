@@ -9,11 +9,15 @@ This project is a **Product Recommendation System** developed using **React** an
 - **Personalized Recommendations**: Shows product recommendations based on user interactions and historical data.
 - **Refresh Recommendations**: Allows users to update recommendations on demand.
 
-## Technologies Used
+The project is built using a modern React frontend with a backend hosted on AWS. It integrates various AWS components to enable seamless CI/CD, cloud storage, database management, and recommendation engine processing. Below is a breakdown of each component:
 
-- **React**: For building the front-end user interface.
-- **AWS Amplify**: For deployment, API integrations, and backend management.
-- **CSS**: For styling and layout.
+- **Frontend**: React.js, hosted on AWS Amplify, with routing managed by React Router.
+- **Backend**: Node.js-based API with AWS Lambda functions for product recommendations.
+- **Database**: AWS RDS (MySQL) for user, product, and recommendation data.
+- **CI/CD**: AWS Amplify’s automatic CI/CD pipelines.
+- **Machine Learning**: Basic recommendation engine powered by user interaction data, view history, and product metadata.
+
+
 
 ## Demo
 
