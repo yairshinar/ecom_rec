@@ -13,7 +13,7 @@ The project is built using a modern React frontend with a backend hosted on AWS.
 
 - **Frontend**: React.js, hosted on AWS Amplify, with routing managed by React Router.
 - **Backend**: Node.js-based API with AWS Lambda functions for product recommendations.
-- **Database**: AWS RDS (MySQL) for user, product, and recommendation data.
+- **Database**: AWS RDS (MySQL) for user, product, and Mongo Atlas  for recommendation data.
 - **CI/CD**: AWS Amplify’s automatic CI/CD pipelines.
 - **Machine Learning**: Basic recommendation engine powered by user interaction data, view history, and product metadata.
 
