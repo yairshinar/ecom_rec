@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import './Home.css';
 import umlDiagram from '../assets/images/ai-commerce-uml.jpg';
 import architectureDesign from '../assets/images/ai-commerce-architecture.jpg';
@@ -24,35 +26,25 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      
-
       <section className="projects">
-        {/* Project Cards */}
-        {/* Repeat for each project */}
         <div className="project-card">
           <h3>Product Recommendation System</h3>
           <p>AI-based system learns and suggests relevant products based on your selections.</p>
           <div className="image-gallery">
-            <div className="thumbnail" onClick={() => openModal(umlDiagram)}>
-              <img src={umlDiagram} alt="UML Diagram" />
-              <div className="image-title">UML Diagram</div>
-            </div>
-            <div className="thumbnail" onClick={() => openModal(architectureDesign)}>
-              <img src={architectureDesign} alt="Architecture Design" />
-              <div className="image-title">Architecture Design</div>
-            </div>
-            <div className="thumbnail" onClick={() => openModal(erdImage)}>
-              <img src={erdImage} alt="ERD" />
-              <div className="image-title">ERD</div>
-            </div>
-            <div className="thumbnail" onClick={() => openModal(page00001)}>
-              <img src={page00001} alt="Recommendation Algorithm Explanation 1" />
-              <div className="image-title">Algorithm Explanation 1</div>
-            </div>
-            <div className="thumbnail" onClick={() => openModal(page00002)}>
-              <img src={page00002} alt="Recommendation Algorithm Explanation 2" />
-              <div className="image-title">Algorithm Explanation 2</div>
-            </div>
+            {/* Image thumbnails with zoom option */}
+            {[{ src: umlDiagram, alt: 'UML Diagram', title: 'UML Diagram' },
+              { src: architectureDesign, alt: 'Architecture Design', title: 'Architecture Design' },
+              { src: erdImage, alt: 'ERD', title: 'ERD' },
+              { src: page00001, alt: 'Algorithm Explanation 1', title: 'Algorithm Explanation 1' },
+              { src: page00002, alt: 'Algorithm Explanation 2', title: 'Algorithm Explanation 2' }].map((image, index) => (
+              <div key={index} className="thumbnail">
+                <Zoom>
+                  <img src={image.src} alt={image.alt} />
+                </Zoom>
+                <div className="image-title">{image.title}</div>
+                <a href={image.src} download className="download-btn">Download</a>
+              </div>
+            ))}
           </div>
           <div className="project-links">
             <Link to="/products" className="btn-project">Test Project</Link>
@@ -71,10 +63,6 @@ const Home = () => {
           </div>
         </div>
       )}
-
-      <footer>
-        <p>Contact me for consultancy or collaboration!</p>
-      </footer>
     </div>
   );
 };
