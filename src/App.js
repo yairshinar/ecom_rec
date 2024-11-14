@@ -6,6 +6,8 @@ import Home from './components/Home';
 import ProductList from './components/ProductList';
 import Recommendations from './components/Recommendations';
 import ProductDetails from './components/ProductDetail'; // Product page with product ID
+import WPHome from './components/WPHome';  
+
 
 function App() {
  
@@ -22,6 +24,8 @@ function App() {
         {/* Route Configurations */}
         <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/wphome" element={<WPHome />} />
+
                 <Route path="/recommendations" element={<Recommendations />} />
                 <Route path="/products" element={<ProductList />} />
                 <Route path="/products/:id" element={<ProductDetails />} />
