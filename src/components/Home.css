@@ -22,6 +22,7 @@
   width: calc(50% - 10px); /* Adjust width for mobile */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
+  box-sizing: border-box;
 }
 
 .project-card:hover {
@@ -30,6 +31,7 @@
 
 .image-gallery {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   margin: 10px 0;
 }
@@ -39,10 +41,12 @@
   cursor: pointer;
   margin: 0 5px;
   flex: 1;
+  box-sizing: border-box;
 }
 
 .thumbnail img {
   width: 100%;
+  max-width: 100%;
   border-radius: 10px;
   border: 2px solid #ccc;
   transition: transform 0.2s;
@@ -99,12 +103,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden; /* Prevents scrolling if modal is larger */
 }
 
 .modal-content {
   position: relative;
-  width: 50%; /* Set the modal width to 50% */
-  max-width: 90%; /* Ensure image doesn't overflow */
+  width: 50%;
+  max-width: 90%;
   background-color: white;
   padding: 20px;
   border-radius: 8px;
@@ -123,7 +128,7 @@
   top: 10px;
   right: 10px;
   font-size: 30px;
-  color: #007bff; /* Blue close button */
+  color: #007bff;
   cursor: pointer;
 }
 
@@ -135,7 +140,8 @@ footer {
 /* Mobile Styles */
 @media (max-width: 768px) {
   .project-card {
-    width: calc(100% - 10px); /* Stack project cards on small screens */
+    width: 100%; /* Stack project cards on small screens */
+    margin: 10px 0; /* Adjust margin for stacked layout */
   }
 
   .modal-content {
@@ -144,6 +150,23 @@ footer {
 
   .close {
     font-size: 24px; /* Adjust close button size on small screens */
+  }
+
+  .image-gallery {
+    flex-direction: column; /* Stack images vertically for mobile */
+  }
+
+  .thumbnail {
+    margin-bottom: 15px; /* Add margin between thumbnails */
+  }
+
+  .thumbnail img {
+    max-width: 100%;
+    height: auto; /* Ensure images are not stretched */
+  }
+
+  .btn-project, .btn-link {
+    font-size: 14px; /* Smaller font for mobile buttons */
   }
 }
 
@@ -160,6 +183,7 @@ footer {
   z-index: 1000;
   overflow: hidden; /* Prevents scrolling if modal is larger */
 }
+
 .modal-content {
   max-width: 90vw;
   max-height: 90vh;
@@ -168,7 +192,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative; /* Make modal-content a reference point for positioning */
+  position: relative;
   background-color: transparent;
 }
 
