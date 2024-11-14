@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import './Home.css';
 import umlDiagram from '../assets/images/ai-commerce-uml.jpg';
 import architectureDesign from '../assets/images/ai-commerce-architecture.jpg';
@@ -31,16 +30,14 @@ const Home = () => {
           <h3>Product Recommendation System</h3>
           <p>AI-based system learns and suggests relevant products based on your selections.</p>
           <div className="image-gallery">
-            {/* Image thumbnails with zoom option */}
+            {/* Image thumbnails with zoom and pan option */}
             {[{ src: umlDiagram, alt: 'UML Diagram', title: 'UML Diagram' },
               { src: architectureDesign, alt: 'Architecture Design', title: 'Architecture Design' },
               { src: erdImage, alt: 'ERD', title: 'ERD' },
               { src: page00001, alt: 'Algorithm Explanation 1', title: 'Algorithm Explanation 1' },
               { src: page00002, alt: 'Algorithm Explanation 2', title: 'Algorithm Explanation 2' }].map((image, index) => (
               <div key={index} className="thumbnail">
-                <Zoom>
-                  <img src={image.src} alt={image.alt} />
-                </Zoom>
+                <img src={image.src} alt={image.alt} onClick={() => openModal(image.src)} />
                 <div className="image-title">{image.title}</div>
                 <a href={image.src} download className="download-btn">Download</a>
               </div>
@@ -56,13 +53,18 @@ const Home = () => {
       </section>
 
       {isModalOpen && (
-        <div className="modal" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <span className="close" onClick={closeModal}>X</span>
-            <img src={currentImage} alt="Enlarged" />
-          </div>
-        </div>
-      )}
+  <div className="modal" onClick={closeModal}>
+    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <span className="close" onClick={closeModal}>X</span>
+      <TransformWrapper>
+        <TransformComponent>
+          <img src={currentImage} alt="Zoomed and Paned Image" className="zoomed-image" />
+        </TransformComponent>
+      </TransformWrapper>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
