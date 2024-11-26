@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import './WPHome.css';
@@ -10,7 +10,7 @@ import page00001 from '../assets/images/page0001.jpg';
 import page00002 from '../assets/images/page0002.jpg';
 
 const WPHome = () => {
-  
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
   // State for tracking zoom and pan
@@ -46,13 +46,33 @@ const WPHome = () => {
   };
 
   // Handle zoom
+  // Handle zoom
   const handleZoom = (e) => {
-    e.preventDefault(); // Prevent page scroll
+    e.preventDefault(); // Prevent page scrolling
     const zoomStep = 0.1; // Adjust zoom sensitivity
     const newScale = e.deltaY < 0 ? scale + zoomStep : scale - zoomStep;
 
     setScale(Math.max(1, newScale)); // Ensure minimum scale is 1
   };
+
+  // Disable page scrolling when modal is open
+  useEffect(() => {
+    const disableScroll = (e) => e.preventDefault();
+
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden'; // Disable page scroll
+      window.addEventListener('wheel', disableScroll, { passive: false });
+    } else {
+      document.body.style.overflow = ''; // Re-enable page scroll
+      window.removeEventListener('wheel', disableScroll);
+    }
+
+    return () => {
+      document.body.style.overflow = ''; // Clean up on unmount
+      window.removeEventListener('wheel', disableScroll);
+    };
+  }, [isModalOpen]);
+
 
   const openModal = (image) => {
     setCurrentImage(image);
