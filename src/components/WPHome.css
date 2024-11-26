@@ -1,3 +1,61 @@
+/* Modal Container */
+.modal {
+  position: fixed;
+  inset: 0; /* Cover the entire viewport */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8); /* Dimmed background */
+  z-index: 1000;
+  overflow: hidden; /* Prevent content overflow */
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  width: 90vw; /* 90% of viewport width */
+  height: 90vh; /* 90% of viewport height */
+  background-color: white;
+  overflow: hidden; /* Prevent zoomed content from spilling outside */
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Optional shadow */
+}
+
+/* Zoomable Image */
+.modal-content img {
+  display: block;
+  max-width: none; /* Allow the image to exceed modal width when zoomed */
+  max-height: none; /* Allow the image to exceed modal height when zoomed */
+  width: auto; /* Maintain aspect ratio */
+  height: auto; /* Maintain aspect ratio */
+  cursor: grab; /* Draggable cursor */
+}
+
+.modal-content img:active {
+  cursor: grabbing; /* Change cursor when dragging */
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: white;
+  background-color: black;
+  padding: 5px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.close:hover {
+  background-color: red;
+  transform: scale(1.1);
+}
 .home-container {
   padding: 20px;
 }
