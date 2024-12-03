@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import './Home.css';
@@ -111,6 +111,32 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <section className="projects">
+        <div className="project-card">
+          <h3>Business Analyst Test</h3>
+          <p>A comprehensive project demonstrating data analysis, forecasting, and SQL integration for churn prediction in gaming.</p>
+          <div className="image-gallery">
+            {/* Replace these placeholder thumbnails with actual project assets */}
+            {[{ src: umlDiagram, alt: 'Dashboard Example', title: 'Dashboard Example' },
+            { src: page00001, alt: 'Churn Model Visualization', title: 'Churn Model Visualization' },
+            { src: architectureDesign, alt: 'A/B Test Insights', title: 'A/B Test Insights' }].map((image, index) => (
+              <div key={index} className="thumbnail">
+                <img src={image.src} alt={image.alt} onClick={() => openModal(image.src)} />
+                <div className="image-title">{image.title}</div>
+                <a href={image.src} download className="download-btn">Download</a>
+              </div>
+            ))}
+          </div>
+          <div className="project-links">
+            <a href="https://<YOUR_AWS_PROJECT_URL>" target="_blank" rel="noopener noreferrer" className="btn-project">View Live Project</a>
+            <a href="https://github.com/yairshinar/churn_decider" target="_blank" rel="noopener noreferrer" className="btn-link">
+              <img src={githubIcon} alt="GitHub" className="icon" /> View Code
+            </a>
+          </div>
+        </div>
+      </section>
+
 
       {isModalOpen && (
         <div
