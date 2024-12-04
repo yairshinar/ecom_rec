@@ -77,6 +77,10 @@ app.post('/api/user/delete', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
