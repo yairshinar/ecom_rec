@@ -104,7 +104,7 @@ const Home = () => {
             ))}
           </div>
           <div className="project-links">
-            <Link to="/products" className="btn-project">Test Project</Link>
+            <Link to="/products" className="btn-project">Interact Live Recommendation Project</Link>
             <a href="https://github.com/yairshinar/ecom_rec" target="_blank" rel="noopener noreferrer" className="btn-link">
               <img src={githubIcon} alt="GitHub" className="icon" /> View Code
             </a>
@@ -129,7 +129,7 @@ const Home = () => {
             ))}
           </div>
           <div className="project-links">
-            <a href="https://churn.eba-924prdxf.us-east-1.elasticbeanstalk.com/flask" target="_blank" rel="noopener noreferrer" className="btn-project">View Live Project</a>
+            <a href="https://churn.eba-924prdxf.us-east-1.elasticbeanstalk.com/flask" target="_blank" rel="noopener noreferrer" className="btn-project">View Churn Analysis Project</a>
             <a href="https://github.com/yairshinar/churn_decider" target="_blank" rel="noopener noreferrer" className="btn-link">
               <img src={githubIcon} alt="GitHub" className="icon" /> View Code
             </a>
