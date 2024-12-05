@@ -4,14 +4,14 @@ const API_URL = process.env.REACT_APP_API_ENDPOINT;
  
 
 export const fetchProducts = async () => {
-    const response = await axios.get(`${API_URL}/products`);
+    const response = await axios.get(`${API_URL}/api/products`);
     return response.data;
 };
 
 export const fetchRecommendations = async (userId) => {
     try {
         
-        const response = await axios.get(`${API_URL}/recommendations/${userId}`);
+        const response = await axios.get(`${API_URL}/api/recommendations/${userId}`);
         return response; 
     } catch (error) {
         console.error('Error fetching recommendations:', error);
@@ -23,7 +23,7 @@ export const fetchRecommendations = async (userId) => {
 export const fetchProductDetails = async (productIds) => {
     try {
       
-        const response = await axios.post(`${API_URL}/products/details`, {
+        const response = await axios.post(`${API_URL}/api/products/details`, {
                productIds   , // Send list of product IDs
         });
         const data = await response;
@@ -38,7 +38,7 @@ export const fetchProductDetails = async (productIds) => {
 
 export const logUserAction = async (userId, productId, action) => {
     try { 
-        await axios.post(`${API_URL}/user/action`, {
+        await axios.post(`${API_URL}/api/user/action`, {
             operation: 'log', // Specify the operation
             userId,
             productId,
@@ -55,7 +55,7 @@ export const logUserAction = async (userId, productId, action) => {
 export const clearUserLogs = async (userId) => {
     try {
         console.log(userId);
-        await axios.post(`${API_URL}/user/delete`, {
+        await axios.post(`${API_URL}/api/user/delete`, {
             operation: 'clear'  , userId
         });
         alert('All user data has been deleted');
