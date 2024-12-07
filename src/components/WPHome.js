@@ -105,7 +105,7 @@ const WPHome = () => {
             ))}
           </div>
           <div className="project-links">
-            <Link to="/products" className="btn-project">Test Project</Link>
+            <Link to="/products" className="btn-project">Interact Live Recommendation Project</Link>
             <a href="https://github.com/yairshinar/ecom_rec" target="_blank" rel="noopener noreferrer" className="btn-link">
               <img src={githubIcon} alt="GitHub" className="icon" /> View Code
             </a>

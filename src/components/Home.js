@@ -8,7 +8,7 @@ import erdImage from '../assets/images/ai-commerce-erd.svg';
 import githubIcon from '../assets/icons/github.svg';
 import page00001 from '../assets/images/page0001.jpg';
 import page00002 from '../assets/images/page0002.jpg';
-
+import project_outline from '../assets/images/project outline.jpg'
 const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -118,9 +118,8 @@ const Home = () => {
           <p>A comprehensive project demonstrating data analysis, forecasting, and SQL integration for churn prediction in gaming.</p>
           <div className="image-gallery">
             {/* Replace these placeholder thumbnails with actual project assets */}
-            {[{ src: umlDiagram, alt: 'Dashboard Example', title: 'Dashboard Example' },
-            { src: page00001, alt: 'Churn Model Visualization', title: 'Churn Model Visualization' },
-            { src: architectureDesign, alt: 'A/B Test Insights', title: 'A/B Test Insights' }].map((image, index) => (
+            {[{ src: project_outline, alt: 'Project Outline', title: 'Project Outline' },
+            ].map((image, index) => (
               <div key={index} className="thumbnail">
                 <img src={image.src} alt={image.alt} onClick={() => openModal(image.src)} />
                 <div className="image-title">{image.title}</div>
