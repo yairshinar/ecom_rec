@@ -136,6 +136,29 @@ const Home = () => {
         </div>
       </section>
 
+      <section className="projects">
+        <div className="project-card">
+          <h3>Large System Design</h3>
+          <p>A comprehensive project demonstrating Large System Design Descisions.</p>
+          <div className="image-gallery">
+            {/* Replace these placeholder thumbnails with actual project assets */}
+            {[{ src: project_outline, alt: 'Project Outline', title: 'Project Outline' },
+            ].map((image, index) => (
+              <div key={index} className="thumbnail">
+                <img src={image.src} alt={image.alt} onClick={() => openModal(image.src)} />
+                <div className="image-title">{image.title}</div>
+                <a href={image.src} download className="download-btn">Download</a>
+              </div>
+            ))}
+          </div>
+          <div className="project-links">
+            <a href="https://churn.eba-924prdxf.us-east-1.elasticbeanstalk.com/sysdesign" target="responsiveIframe" rel="noopener noreferrer" className="btn-project">View Large System Design Project</a>
+            <a href="https://github.com/yairshinar/large_system_design" target="_blank" rel="noopener noreferrer" className="btn-link">
+              <img src={githubIcon} alt="GitHub" className="icon" /> View Code
+            </a>
+          </div>
+        </div>
+      </section>
 
       {isModalOpen && (
         <div
