@@ -128,7 +128,7 @@ const Home = () => {
             ))}
           </div>
           <div className="project-links">
-            <a href="https://churn.eba-924prdxf.us-east-1.elasticbeanstalk.com/flask" target="responsiveIframe" rel="noopener noreferrer" className="btn-project">View Churn Analysis Project</a>
+            <a href="https://alldoc-env.eba-mfpiufq9.us-east-1.elasticbeanstalk.com/flask" target="responsiveIframe" rel="noopener noreferrer" className="btn-project">View Churn Analysis Project</a>
             <a href="https://github.com/yairshinar/churn_decider" target="_blank" rel="noopener noreferrer" className="btn-link">
               <img src={githubIcon} alt="GitHub" className="icon" /> View Code
             </a>
@@ -152,7 +152,7 @@ const Home = () => {
             ))}
           </div>
           <div className="project-links">
-            <a href="https://churn.eba-924prdxf.us-east-1.elasticbeanstalk.com/sysdesign" target="responsiveIframe" rel="noopener noreferrer" className="btn-project">View Large System Design Project</a>
+            <a href="https://alldoc-env.eba-mfpiufq9.us-east-1.elasticbeanstalk.com/sysdesign" target="responsiveIframe" rel="noopener noreferrer" className="btn-project">View Large System Design Project</a>
             <a href="https://github.com/yairshinar/large_system_design" target="_blank" rel="noopener noreferrer" className="btn-link">
               <img src={githubIcon} alt="GitHub" className="icon" /> View Code
             </a>
