@@ -9,6 +9,13 @@ import githubIcon from '../assets/icons/github.svg';
 import page00001 from '../assets/images/page0001.jpg';
 import page00002 from '../assets/images/page0002.jpg';
 import project_outline from '../assets/images/project outline.jpg'
+import architecture_large from '../assets/images/architecture_large_system_design.jpg'
+import page1_large from '../assets/images/page3_large.jpg';
+import page2_large from '../assets/images/page2_large.jpg';
+import page3_large from '../assets/images/page3_large.jpg';
+import page4_large from '../assets/images/page4_large.jpg';
+
+
 const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -142,8 +149,15 @@ const Home = () => {
           <p>A comprehensive project demonstrating Large System Design Descisions.</p>
           <div className="image-gallery">
             {/* Replace these placeholder thumbnails with actual project assets */}
-            {[{ src: project_outline, alt: 'Project Outline', title: 'Project Outline' },
-            ].map((image, index) => (
+            {[{ src: architecture_large, alt: 'Artchitecure Outline', title: 'Artchitecure Outline' },
+                    { src: page1_large, alt: 'Design Explanation 1', title: 'Design Explanation 1' },
+                    { src: page2_large, alt: 'Design Explanation 2', title: 'Design Explanation 2' },
+                    { src: page3_large, alt: 'Design Explanation 3', title: 'Design Explanation 3' },
+                    { src: page4_large, alt: 'Design Explanation 4', title: 'Design Explanation 4' },
+ 
+        
+        
+        ].map((image, index) => (
               <div key={index} className="thumbnail">
                 <img src={image.src} alt={image.alt} onClick={() => openModal(image.src)} />
                 <div className="image-title">{image.title}</div>
