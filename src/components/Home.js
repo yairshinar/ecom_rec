@@ -10,7 +10,7 @@ import page00001 from '../assets/images/page0001.jpg';
 import page00002 from '../assets/images/page0002.jpg';
 import project_outline from '../assets/images/project outline.jpg'
 import architecture_large from '../assets/images/architecture_large_system_design.jpg'
-import page1_large from '../assets/images/page3_large.jpg';
+import page1_large from '../assets/images/page1_large.jpg';
 import page2_large from '../assets/images/page2_large.jpg';
 import page3_large from '../assets/images/page3_large.jpg';
 import page4_large from '../assets/images/page4_large.jpg';
